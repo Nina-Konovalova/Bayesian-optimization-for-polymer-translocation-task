@@ -1,0 +1,6 @@
+*.png
+*.jpg
+.idea/
+__pycache__/
+venv/
+outputic.exe
