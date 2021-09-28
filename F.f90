@@ -67,6 +67,15 @@ enddo
 derF(0) = Ft(1)-Ft(0) 
 derF(N) = Ft(N)-Ft(N-1)
 
+open(1,file = './der_output.txt')
+do j=0,N
+    IF (derF(j) >= 0) write(1,'(2e13.6)') abs(derF(j)), 1e0
+    IF (derF(j) < 0) write(1,'(2e13.6)') abs(derF(j)), 0e0
+
+enddo
+close(1)
+
+
   do i =1,N-1 ! AV: preparing for implicit solution in finite differences
    A(i) = derF(i)*dt/4.0 -dt/2.0
    B(i) = 1.-dt/4.0*(derF(i+1)-derF(i-1))+dt
@@ -76,13 +85,13 @@ derF(N) = Ft(N)-Ft(N-1)
 do j = 0, Nt ! initilize wmt not filled later
   wmt(0,j)=0.0d0  ! wmt has not beei initialize anyway
 enddo
-	
+
 do i = 0, N
     wmt(i,0)=0.0d0
-enddo 
-    
+enddo
+
 wmt(1,0) = 1.0d0 ! initial condition: one segment in trans-space at time 0
-do j =1,Nt		 ! loop over time	     
+do j =1,Nt		 ! loop over time
     do i = 1,N-1
        D(i) = wmt(i,j-1)+dt/4.0*(derF(i+1)-derF(i-1))*wmt(i,j-1) + &
         dt/4.0* derF(i) * (wmt(i+1,j-1)-wmt(i-1,j-1)) + &
@@ -104,7 +113,7 @@ enddo
 pTime0(0) = 0
 
 
-do j=0,Nt 
+do j=0,Nt
     time_p_N(j)=pTimeN(j)
     time_p_0(j)=pTime0(j)
 enddo
@@ -118,63 +127,60 @@ do j=0,Nt
 enddo
 
 Translocation_Rate = pT/(pF+pT)
+
 if (Translocation_Rate < 1e-44) Translocation_Rate = 0
 !print *, pT*1e38
 
 mid = 0.0 ! AV^ normallization of probabilities
+print *, mid
 do j=0,Nt
     mid = mid + pTimeN(j)
-    
 enddo
+print *, mid
 do j =0, Nt
-  !PRINT *, pTimeN(j)
-  !if ((pTimeN(j))<1E-40) PRINT *, pTimeN(j)
-  !if (j == 5) PRINT *, j
-  
+
   pTimeN(j) = pTimeN(j)*1.0/mid
-  if (abs(pTimeN(j))<1E-44) pTimeN(j) = 0.0
-  
-  !print *, pTimeN(j)
-  
-  
+  if ((pTimeN(j))<1E-44) pTimeN(j) = 0.0
+
 enddo
-	     
+
 time = 0
-	      
+
 do j = 0,Nt
     time =  time + j*pTimeN(j)*dt
-enddo 
+enddo
 
 mid = 0.0
 do j=1,Nt
     mid = mid + pTime0(j)
 enddo
+print *, mid
+
 do j =1, Nt
-    
+
     pTime0(j) = pTime0(j)*1.0/mid
-    if (abs(pTime0(j)*1E38)<1E-44) pTime0(j) = 0.0
-    !if (abs(pTime0(j)) < 1e-50) pTime0(j) = 0.0
+    if ((pTime0(j)*1E38)<1E-44) pTime0(j) = 0.0
 enddo
-	     
+
 timeback = 0
-	      
+
 do j = 0,Nt
  timeback =  timeback + j*pTime0(j)*dt
-enddo 
+enddo
 
-     
+
 do j=1,Nt
     Jreturn(j)=0
     do i=1,20
         Jreturn(j)=Jreturn(j)+ exp(-3.1416*3.1416*j*i*i/(N*N)) &
         *3.1416*i/N*sin(1.0*3.1416*i/N)*cos(3.1416*i)
     enddo
-    Jreturn(j) = -Jreturn(j)*2.0/N   
+    Jreturn(j) = -Jreturn(j)*2.0/N
 enddo
 print*, 'Fortran runs'
-open(2,file = './new_output.txt') 
+open(2,file = './new_output.txt')
 write(2,'(a,i7,a,e13.6,a,e13.6)') &
-        ' N = ',N,' success rate=',abs(Translocation_Rate),' time=', time
+        ' N = ',N,' success rate=', Translocation_Rate,' time=', time
 write(2,'(a,i7,a,e13.6,a,e13.6)') &
         ' Nt = ',Nt,' failure rate=',1.0-Translocation_Rate,' time=', timeback
 do j=0,timedisplay,intdisplay
