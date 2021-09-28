@@ -8,13 +8,14 @@ def optimization(args):
     x_e = pd.read_csv(args.path_experiments)
     x_e = np.array(x_e)
 
-    x_parametr_pol = np.array(pd.read_csv('X_train_gauss.csv'))
+    x_parametr_pol = np.array(pd.read_csv('X_train_gauss.csv'))[:, 1:]
+    print('shape', x_parametr_pol.shape)
     y_train = np.array(pd.read_csv('Y_train.csv'))
 
     for i in range(len(x_e)):
-        GP_model = BayesianOptimization(args.model_type, x_e[i])
+        GP_model = BayesianOptimization(args.model_type, x_e[i], i)
         GP_model.optimization_step(x_parametr_pol, y_train, args.number_steps,
-                                   args.path_for_save + 'experiment_' + str(i), args.acquisition_type)
+                                   args.path_for_save, args.acquisition_type)
 
 
 def main():
