@@ -12,7 +12,7 @@ def optimization(args):
     print('shape', x_parametr_pol.shape)
     y_train = np.array(pd.read_csv('Y_train.csv'))
 
-    for i in range(len(x_e)):
+    for i in range(6, len(x_e)):
         GP_model = BayesianOptimization(args.model_type, x_e[i], i)
         GP_model.optimization_step(x_parametr_pol, y_train, args.number_steps,
                                    args.path_for_save, args.acquisition_type)

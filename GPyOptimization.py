@@ -17,6 +17,7 @@ seed(12354)
 class BayesianOptimization:
     def __init__(self, model_type, X_true, exp_number=1, kernel=None):
         self.model_type = model_type
+        self.points_polymer = np.arange(51)
         self.exp_number = exp_number
         max_amp = np.max(abs(X_true)) * 100
         self.space = [{'name': 'var_1', 'type': 'continuous', 'domain': (-max_amp, max_amp)},
@@ -50,7 +51,7 @@ class BayesianOptimization:
             else:
                 self.model = GPyOpt.models.WarpedGPModel(GPyOpt.core.task.space.Design_space(self.space),
                                                          exact_feval=True)  # нужно разобраться со спейсом тут
-        self.points_polymer = np.arange(51)
+
         self.X_true = X_true
         self.X_param_true = self.fitting_curves(X_true)
         self.Y_pos_real, self.Y_neg_real, self.rate_real = self.probabilities_from_init_distributions(self.X_param_true)
@@ -63,6 +64,7 @@ class BayesianOptimization:
                 amp3 * 1 / (np.sqrt(wid3 * 2 * np.pi)) * exp(-(x - cen3) ** 2 / (2 * wid3))
 
         return gauss
+
     # def gaussian(x, params):
     #     amp = []
     #     mu = []
@@ -77,10 +79,8 @@ class BayesianOptimization:
     #
     #     return gauss
 
-
     def fitting_curves(self, y, function='gauss'):
-        x = linspace(0, 51, 51)
-
+        x = self.points_polymer
         if function == 'gauss':
             guess = [0.4, x[np.argmax(np.abs(y))], 1, 0.4, x[np.argmax(np.abs(y))], 1, 0.4, x[np.argmax(np.abs(y))], 1,
                      0.4, x[np.argmax(np.abs(y))], 1]
@@ -91,9 +91,9 @@ class BayesianOptimization:
     def probabilities_from_init_distributions(self, x_end):
         best_vals = x_end
         y = self.gaussian(self.points_polymer, best_vals[0], best_vals[1], best_vals[2],
-                               best_vals[3], best_vals[4], best_vals[5],
-                               best_vals[6], best_vals[7], best_vals[8],
-                               best_vals[9], best_vals[10], best_vals[11])
+                          best_vals[3], best_vals[4], best_vals[5],
+                          best_vals[6], best_vals[7], best_vals[8],
+                          best_vals[9], best_vals[10], best_vals[11])
         self.make_input_file(y)
         plt.plot(y, 'go--', linewidth=4, markersize=2,
                  color='red', label='parametrized X')
@@ -151,20 +151,13 @@ class BayesianOptimization:
 
         return rate, y_pos_new, y_neg_new
 
-
     def fokker_plank_eq(self, x_end):
         eps = 10e-18
         best_vals = x_end[0]
-        #print(best_vals)
         new_curv = self.gaussian(self.points_polymer, best_vals[0], best_vals[1], best_vals[2] + eps,
-                                                      best_vals[3], best_vals[4], best_vals[5] + eps,
-                                                      best_vals[6], best_vals[7], best_vals[8] + eps,
-                                                      best_vals[9], best_vals[10], best_vals[11]+ eps)
-        # print(new_curv[0])
-        # if round(new_curv[0], 3) != 0:
-        #     print('moving a little bit')
-        #     new_curv = new_curv - new_curv[0]
-        #     x_end = self.fitting_curves(new_curv, function='gauss')
+                                 best_vals[3], best_vals[4], best_vals[5] + eps,
+                                 best_vals[6], best_vals[7], best_vals[8] + eps,
+                                 best_vals[9], best_vals[10], best_vals[11] + eps)
 
         self.make_input_file(new_curv)
 
@@ -172,11 +165,22 @@ class BayesianOptimization:
         subprocess.check_output(["./outputic"])
 
         # checking derives of function
-        old_derives = self.read_derives()
-        new_der = np.clip(old_derives, -4, 4)
-        new_curv_1 = self.function_from_der(new_curv, new_der)
-        #print(new_curv)
-        if not np.allclose(new_curv, new_curv_1):
+        change = "not_change"
+        i = 0
+        while True:
+
+            old_der = self.read_derives()
+            new_der = np.clip(old_der, -4, 4)
+            print("-----------")
+            print(i)
+            i += 1
+            print(old_der - new_der)
+            print('---------------')
+            if np.allclose(np.zeros(len(new_der)), new_der - old_der):
+                break
+            new_curv_1 = self.function_from_der(new_curv, new_der)
+            # print(new_curv)
+            change = "change"
             x_end = self.fitting_curves(new_curv_1, function='gauss')
             self.make_input_file(new_curv_1)
             subprocess.check_output(["./outputic"])
@@ -184,22 +188,28 @@ class BayesianOptimization:
 
         if rate == 1e20:
             print('fuckup')
+            old_der = self.read_derives()
+            print((old_der>4).sum())
+            np.save(self.path_for_save + "just_too_big_" + change + "_" + str(x_end[0]) + '.npy', x_end)
             return 1e20
+
+        if rate > 1:
+            print('fuckup', x_end)
+            np.save(self.path_for_save + "bigger_1_" + change + "_" + str(x_end[0]) + '.npy', x_end)
 
         # mse for minimization
         loss_true = mse((y_pos_new[:]), (self.Y_pos_real[:]))
         loss_false = mse((y_neg_new[:]), (self.Y_neg_real[:]))
         loss_rate = abs(rate - self.rate_real)
         loss_rate *= 10 ** (-int(math.log((2 * loss_rate) / (loss_true + loss_false), 10)))
-        if rate > 1:
-            print('fuckup', x_end)
-        #print(rate, self.rate_real)
+
+        # print(rate, self.rate_real)
         diff_new = loss_false + loss_true + loss_rate
         return diff_new
 
     def optimization_step(self, x_parametr_pol, y_train, num_steps, path_for_save, acquisition_type='MPI',
-                          normalize=True, num_cores=-1, evaluator_type='lbfgs'):
-
+                          normalize=True, num_cores=-1, evaluator_type='CMA'):
+        self.path_for_save = path_for_save
         myBopt = GPyOpt.methods.BayesianOptimization(f=self.fokker_plank_eq,  # function to optimize
                                                      domain=self.space,  # box-constraints of the problem
                                                      model=self.model,
@@ -212,17 +222,18 @@ class BayesianOptimization:
                                                      acquisition_type=acquisition_type)
         # print('model', myBopt.model.model)
         print('optimization starts')
-        myBopt.run_optimization(num_steps, report_file = path_for_save + 'report_file_' + str(self.exp_number) + '.txt',
-                                models_file = path_for_save + 'model_params_' + str(self.exp_number) + '.txt')
+        myBopt.run_optimization(num_steps, report_file=path_for_save + 'report_file_' + str(self.exp_number) + '.txt',
+                                models_file=path_for_save + 'model_params_' + str(self.exp_number) + '.txt')
 
         best_vals = myBopt.x_opt
         print(myBopt.model.model)
         plt.figure(figsize=(16, 12))
         plt.plot(self.points_polymer, self.X_true, label='real X')
         plt.plot(self.points_polymer, self.gaussian(self.points_polymer, best_vals[0], best_vals[1], best_vals[2],
-                                  best_vals[3], best_vals[4], best_vals[5],
-                                  best_vals[6], best_vals[7], best_vals[8],
-                                  best_vals[9], best_vals[10], best_vals[11]), 'go--', linewidth=4, markersize=2,
+                                                    best_vals[3], best_vals[4], best_vals[5],
+                                                    best_vals[6], best_vals[7], best_vals[8],
+                                                    best_vals[9], best_vals[10], best_vals[11]), 'go--', linewidth=4,
+                 markersize=2,
                  color='red', label='predicted')
         plt.legend()
         path_for_save = path_for_save + 'experiment_' + str(self.exp_number)

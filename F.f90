@@ -75,7 +75,6 @@ do j=0,N
 enddo
 close(1)
 
-
   do i =1,N-1 ! AV: preparing for implicit solution in finite differences
    A(i) = derF(i)*dt/4.0 -dt/2.0
    B(i) = 1.-dt/4.0*(derF(i+1)-derF(i-1))+dt
