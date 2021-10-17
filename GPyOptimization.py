@@ -3,9 +3,8 @@ import GPyOpt
 import numpy as np
 from sklearn.metrics import mean_squared_error as mse
 from numpy.random import seed
-import pandas as pd
-from numpy import exp, linspace, random
-from scipy.optimize import curve_fit
+from gauss_fit import *
+from data_frotran_utils import *
 import subprocess
 import math
 import matplotlib.pyplot as plt
@@ -20,19 +19,49 @@ class BayesianOptimization:
         self.points_polymer = np.arange(51)
         self.exp_number = exp_number
         max_amp = np.max(abs(X_true)) * 100
-        self.space = [{'name': 'var_1', 'type': 'continuous', 'domain': (-max_amp, max_amp)},
-                      {'name': 'var_2', 'type': 'continuous', 'domain': (0, 100)},  # 2
-                      {'name': 'var_3', 'type': 'continuous', 'domain': (0, 10)},
-                      {'name': 'var_4', 'type': 'continuous', 'domain': (-max_amp, max_amp)},
-                      {'name': 'var_5', 'type': 'continuous', 'domain': (0, 100)},  # 2
-                      {'name': 'var_6', 'type': 'continuous', 'domain': (0, 10)},
-                      {'name': 'var_7', 'type': 'continuous', 'domain': (-max_amp, max_amp)},
-                      {'name': 'var_8', 'type': 'continuous', 'domain': (0, 100)},  # 2
-                      {'name': 'var_9', 'type': 'continuous', 'domain': (0, 10)},
-                      {'name': 'var_10', 'type': 'continuous', 'domain': (-max_amp, max_amp)},
-                      {'name': 'var_11', 'type': 'continuous', 'domain': (0, 100)},  # 2
-                      {'name': 'var_12', 'type': 'continuous', 'domain': (0, 10)}]
+        self.space = [{'name': 'var_1', 'type': 'continuous', 'domain': (0, 400)},
+                      {'name': 'var_2', 'type': 'continuous', 'domain': (0, 400)},  # 2
+                      {'name': 'var_3', 'type': 'continuous', 'domain': (0, 400)},
+                      {'name': 'var_4', 'type': 'continuous', 'domain': (0, 400)},
+                      {'name': 'var_5', 'type': 'continuous', 'domain': (0, 400)},
+                      {'name': 'var_6', 'type': 'continuous', 'domain': (0, 400)},  # 2
+                      {'name': 'var_7', 'type': 'continuous', 'domain': (0, 400)},
+                      {'name': 'var_8', 'type': 'continuous', 'domain': (0, 400)},
+                      {'name': 'var_9', 'type': 'continuous', 'domain': (0, 400)},
+                      {'name': 'var_10', 'type': 'continuous', 'domain': (0, 400)},
+                      {'name': 'var_11', 'type': 'continuous', 'domain': (-100, 100)},
+                      {'name': 'var_12', 'type': 'continuous', 'domain': (-100, 100)},  # 2
+                      {'name': 'var_13', 'type': 'continuous', 'domain': (-100, 100)},
+                      {'name': 'var_14', 'type': 'continuous', 'domain': (-100, 100)},
+                      {'name': 'var_15', 'type': 'continuous', 'domain': (-100, 100)},
+                      {'name': 'var_16', 'type': 'continuous', 'domain': (-100, 100)},  # 2
+                      {'name': 'var_17', 'type': 'continuous', 'domain': (-100, 100)},
+                      {'name': 'var_18', 'type': 'continuous', 'domain': (-100, 100)},
+                      {'name': 'var_19', 'type': 'continuous', 'domain': (-100, 100)},
+                      {'name': 'var_20', 'type': 'continuous', 'domain': (-100, 100)}
+                      ]
+        # -0.52737788, -0.15180059, -0.07312432,  0.64599908, -0.24175772,
+        #         0.33555477,  0.22559383, -0.18472227, -0.08064132, -0.58839876,
+        #         0.69749632, -0.33246393,  0.72968321])
 
+        self.constraints = [{'name': 'constr_1', 'constraint': 'abs(x[:,10])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,0]'},
+                            {'name': 'constr_2', 'constraint': 'abs(x[:,11])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,1]'},
+                            {'name': 'constr_3', 'constraint': 'abs(x[:,12])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,2]'},
+                            {'name': 'constr_4', 'constraint': 'abs(x[:,13])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,3]'},
+                            {'name': 'constr_5', 'constraint': 'abs(x[:,14])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,4]'},
+                            {'name': 'constr_6', 'constraint': 'abs(x[:,15])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,5]'},
+                            {'name': 'constr_7', 'constraint': 'abs(x[:,16])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,6]'},
+                            {'name': 'constr_8', 'constraint': 'abs(x[:,17])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,7]'},
+                            {'name': 'constr_9', 'constraint': 'abs(x[:,18])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,8]'},
+                            {'name': 'constr_10', 'constraint': 'abs(x[:,19])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,9]'}
+                            ]
+
+        # self.feasible_region = GPyOpt.Design_space(space=self.space, constraints=self.constraints)
+        #kernel = GPy.kern.Matern32(12)
+        # GPy.kern.ExpQuad(12)
+        # GPy.kern.Matern32(12)
+        # GPy.kern.RBF(12)
+        # GPy.kern.RatQuad(12)
         if self.model_type == 'GP':
             if kernel is not None:
                 self.model = GPyOpt.models.GPModel(kernel, optimize_restarts=3, exact_feval=True)
@@ -53,56 +82,20 @@ class BayesianOptimization:
                                                          exact_feval=True)  # нужно разобраться со спейсом тут
 
         self.X_true = X_true
-        self.X_param_true = self.fitting_curves(X_true)
+        self.X_param_true = fitting_curves(X_true)
         self.Y_pos_real, self.Y_neg_real, self.rate_real = self.probabilities_from_init_distributions(self.X_param_true)
-
-    @staticmethod
-    def gaussian(x, amp, cen, wid, amp1, cen1, wid1, amp2, cen2, wid2, amp3, cen3, wid3):
-        gauss = amp * 1 / (np.sqrt(wid * 2 * np.pi)) * exp(-(x - cen) ** 2 / (2 * wid)) + \
-                amp1 * 1 / (np.sqrt(wid1 * 2 * np.pi)) * exp(-(x - cen1) ** 2 / (2 * wid1)) + \
-                amp2 * 1 / (np.sqrt(wid2 * 2 * np.pi)) * exp(-(x - cen2) ** 2 / (2 * wid2)) + \
-                amp3 * 1 / (np.sqrt(wid3 * 2 * np.pi)) * exp(-(x - cen3) ** 2 / (2 * wid3))
-
-        return gauss
-
-    # def gaussian(x, params):
-    #     amp = []
-    #     mu = []
-    #     sigma = []
-    #     for i in range (len(params)//3):
-    #         amp.append(params[3*i])
-    #         mu.append(params[3*i+1])
-    #         sigma.append(params[3*i+2])
-    #     gauss = 0
-    #     for i in range(len(amp)):
-    #         gauss += amp * 1 / (np.sqrt(sigma[i] * 2 * np.pi)) * exp(-(x - mu[i]) ** 2 / (2 * sigma[i]))
-    #
-    #     return gauss
-
-    def fitting_curves(self, y, function='gauss'):
-        x = self.points_polymer
-        if function == 'gauss':
-            guess = [0.4, x[np.argmax(np.abs(y))], 1, 0.4, x[np.argmax(np.abs(y))], 1, 0.4, x[np.argmax(np.abs(y))], 1,
-                     0.4, x[np.argmax(np.abs(y))], 1]
-            best_vals, _ = curve_fit(self.gaussian, x, y, maxfev=100000, method='trf', p0=guess)
-
-        return best_vals
 
     def probabilities_from_init_distributions(self, x_end):
         best_vals = x_end
-        y = self.gaussian(self.points_polymer, best_vals[0], best_vals[1], best_vals[2],
-                          best_vals[3], best_vals[4], best_vals[5],
-                          best_vals[6], best_vals[7], best_vals[8],
-                          best_vals[9], best_vals[10], best_vals[11])
-        self.make_input_file(y)
+        y = gaussian(self.points_polymer, *best_vals)
+        make_input_file(y)
         plt.plot(y, 'go--', linewidth=4, markersize=2,
                  color='red', label='parametrized X')
 
         # fortran programm - making new distributions
         subprocess.check_output(["./outputic"])
         # saving new output data
-        rate, y_pos_new, y_neg_new = self.read_data()
-
+        rate, y_pos_new, y_neg_new = read_data()
         return y_pos_new, y_neg_new, rate
 
     @staticmethod
@@ -113,53 +106,13 @@ class BayesianOptimization:
             y1[i + 1] = y1[i - 1] + 2 * der[i]
         return y1
 
-    @staticmethod
-    def make_input_file(curv, N=51, t=1, num1=50000):
-        f = open('./new_input.txt', 'w')
-        f.write(
-            str(N - 1) + '\t' + str(t) + '\n' + str(num1) + '\t' + str(t) + '\t' + str(10000) + '\t' + str(t) + '\n')
-        for i in range(N):
-            f.write(str(i) + '\t' + str(curv[i]) + '\n')
-        f.close()
-
-    @staticmethod
-    def read_derives(path_to_file='./der_output.txt'):
-        derives_dat = pd.read_csv(path_to_file, sep=' ', header=None)
-        derives_dat[2][derives_dat[2] == 0] = -1
-        for i in range(derives_dat.shape[0]):
-            if str(derives_dat[1][i]).find('E') == -1 \
-                    and str(derives_dat[1][i]).find('e') == -1 \
-                    and str(derives_dat[1][i]).find('-') != -1 \
-                    and str(derives_dat[1][i]).find('nan') == -1:
-                derives_dat[1][i] = (str(derives_dat[1][i]).split('-')[0]) + 'E' + \
-                                    '-' + (str(derives_dat[1][i]).split('-')[1])
-        derives = np.array(np.array(derives_dat[1]).astype('float32') * derives_dat[2]).astype('float32')
-        return derives
-
-    @staticmethod
-    def read_data(path_to_file='./new_output.txt'):
-        dat = pd.read_csv(path_to_file, sep=' ', skiprows=[0, 1, 2], header=None)
-        dat.drop(dat.columns[0], axis=1, inplace=True)
-        dat.fillna(1e+20, inplace=True)
-        r = pd.read_csv('./new_output.txt', sep=' ', nrows=1, header=None)
-        r.fillna(1e+20, inplace=True)
-        rate = np.array(r)[0][11]
-        rate = float(rate)
-
-        y_pos_new = np.array(dat[1][:], dtype=float)
-        y_neg_new = np.array(dat[2][:], dtype=float)
-
-        return rate, y_pos_new, y_neg_new
-
     def fokker_plank_eq(self, x_end):
+        problem = False
         eps = 10e-18
         best_vals = x_end[0]
-        new_curv = self.gaussian(self.points_polymer, best_vals[0], best_vals[1], best_vals[2] + eps,
-                                 best_vals[3], best_vals[4], best_vals[5] + eps,
-                                 best_vals[6], best_vals[7], best_vals[8] + eps,
-                                 best_vals[9], best_vals[10], best_vals[11] + eps)
+        new_curv = gaussian(self.points_polymer, *best_vals)
 
-        self.make_input_file(new_curv)
+        make_input_file(new_curv)
 
         # fortran programm - making new distributions
         subprocess.check_output(["./outputic"])
@@ -167,35 +120,52 @@ class BayesianOptimization:
         # checking derives of function
         change = "not_change"
         i = 0
-        while True:
 
-            old_der = self.read_derives()
-            new_der = np.clip(old_der, -4, 4)
-            print("-----------")
-            print(i)
-            i += 1
-            print(old_der - new_der)
-            print('---------------')
-            if np.allclose(np.zeros(len(new_der)), new_der - old_der):
-                break
-            new_curv_1 = self.function_from_der(new_curv, new_der)
-            # print(new_curv)
-            change = "change"
-            x_end = self.fitting_curves(new_curv_1, function='gauss')
-            self.make_input_file(new_curv_1)
-            subprocess.check_output(["./outputic"])
-        rate, y_pos_new, y_neg_new = self.read_data()
+        old_der = read_derives()
+        if (abs(old_der) > 4.).sum() != 0:
+            problem = True
+            np.save(self.path_for_save + "out_of_space/" + str(x_end[0][0]) + '.npy', x_end)
+            plt.figure(figsize=(16, 12))
+            plt.plot(self.points_polymer, self.gaussian(self.points_polymer, *best_vals), 'go--',
+                     linewidth=4,
+                     markersize=2,
+                     color='red', label='predicted')
+            plt.legend()
+            path_for_save = self.path_for_save + "out_of_space/" + str(x_end[0][0])
+            plt.savefig(path_for_save + '.png')
+
+        rate, y_pos_new, y_neg_new = read_data()
 
         if rate == 1e20:
-            print('fuckup')
-            old_der = self.read_derives()
-            print((old_der>4).sum())
-            np.save(self.path_for_save + "just_too_big_" + change + "_" + str(x_end[0]) + '.npy', x_end)
-            return 1e20
+            print('fuckup, out of space')
+            problem = True
+            old_der = read_derives()
+            print((old_der > 4).sum())
+            np.save(self.path_for_save + "big_rate/" + str(x_end[0][0]) + '.npy', x_end)
+            plt.figure(figsize=(16, 12))
+            plt.plot(self.points_polymer, self.gaussian(self.points_polymer, *best_vals), 'go--',
+                     linewidth=4,
+                     markersize=2,
+                     color='red', label='predicted')
+            plt.legend()
+            path_for_save = self.path_for_save + "big_rate/" + str(x_end[0][0])
+            plt.savefig(path_for_save + '.png')
+
+            return 1e20, x_end, problem
 
         if rate > 1:
             print('fuckup', x_end)
-            np.save(self.path_for_save + "bigger_1_" + change + "_" + str(x_end[0]) + '.npy', x_end)
+            problem = True
+            np.save(self.path_for_save + "bigger_1/" + "bigger_1_" + change + "_" + str(x_end[0][0]) + '.npy',
+                    x_end)
+            plt.figure(figsize=(16, 12))
+            plt.plot(self.points_polymer, self.gaussian(self.points_polymer, *best_vals), 'go--',
+                     linewidth=4,
+                     markersize=2,
+                     color='red', label='predicted')
+            plt.legend()
+            path_for_save = self.path_for_save + "bigger_1/" + str(x_end[0][0])
+            plt.savefig(path_for_save + '.png')
 
         # mse for minimization
         loss_true = mse((y_pos_new[:]), (self.Y_pos_real[:]))
@@ -205,21 +175,26 @@ class BayesianOptimization:
 
         # print(rate, self.rate_real)
         diff_new = loss_false + loss_true + loss_rate
-        return diff_new
+        return diff_new, x_end, problem
 
     def optimization_step(self, x_parametr_pol, y_train, num_steps, path_for_save, acquisition_type='MPI',
-                          normalize=True, num_cores=-1, evaluator_type='CMA'):
+                          normalize=False, num_cores=-1, evaluator_type='lbfgs'):
         self.path_for_save = path_for_save
+        # kernel = GPy.kern.RBF(12)
+        # kernel = GPy.kern.Matern32(12)
+        # kernel = GPy.kern.RatQuad(12)
         myBopt = GPyOpt.methods.BayesianOptimization(f=self.fokker_plank_eq,  # function to optimize
-                                                     domain=self.space,  # box-constraints of the problem
+                                                     domain=self.space,
+                                                     constraints=self.constraints,  # box-constraints of the problem
                                                      model=self.model,
                                                      Model_type=self.model_type,
                                                      X=x_parametr_pol,
                                                      verbosity=False,
                                                      normalize_Y=normalize,
                                                      evaluator_type=evaluator_type,
-                                                     num_cores=num_cores,
+                                                     num_cores=1,
                                                      acquisition_type=acquisition_type)
+
         # print('model', myBopt.model.model)
         print('optimization starts')
         myBopt.run_optimization(num_steps, report_file=path_for_save + 'report_file_' + str(self.exp_number) + '.txt',
@@ -229,10 +204,7 @@ class BayesianOptimization:
         print(myBopt.model.model)
         plt.figure(figsize=(16, 12))
         plt.plot(self.points_polymer, self.X_true, label='real X')
-        plt.plot(self.points_polymer, self.gaussian(self.points_polymer, best_vals[0], best_vals[1], best_vals[2],
-                                                    best_vals[3], best_vals[4], best_vals[5],
-                                                    best_vals[6], best_vals[7], best_vals[8],
-                                                    best_vals[9], best_vals[10], best_vals[11]), 'go--', linewidth=4,
+        plt.plot(self.points_polymer, gaussian(self.points_polymer, *best_vals), 'go--', linewidth=4,
                  markersize=2,
                  color='red', label='predicted')
         plt.legend()
