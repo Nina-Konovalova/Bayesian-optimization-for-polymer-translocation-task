@@ -32,3 +32,13 @@
 
 ## Configuration
 
+[Configuration file](https://github.com/Nina-Konovalova/bayes_experiment/blob/main/Configurations/Config.py) includes:
+
+`MONOMERS` - number of monomers. Default - **51**;
+
+`SPACE` - space for optimization. Now for **20 gaussians**;
+
+`CONSTRAINTS` - constraints for optimization. Now for **20 gaussians**.
+
+
+
