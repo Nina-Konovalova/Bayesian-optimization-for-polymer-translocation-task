@@ -23,6 +23,8 @@ def parse_args():
                         help='path_for_saving_images')
     parser.add_argument('-exp', '--path_experiments', default='experimental_data.csv', type=str,
                         help='path_for_experiments')
+    parser.add_argument('-kernel', '--kernel_type', default='Matern52', type=str,
+                        help='type of kernel')
     args = parser.parse_args()
     return args
 

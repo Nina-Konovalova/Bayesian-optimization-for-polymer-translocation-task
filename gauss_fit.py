@@ -4,7 +4,7 @@ from scipy.optimize import curve_fit
 
 
 def gaussian(x, *params):
-    cen = np.linspace(5, 45, 10)
+    cen = np.linspace(3, 73, 20)
     wid = params[:len(cen)]
     amp = params[len(cen):]
     gauss = 0
@@ -17,8 +17,8 @@ def gaussian(x, *params):
 def fitting_curves(y, function='gauss'):
     x = np.arange(51)
     if function == 'gauss':
-        wid_guess = np.ones(10) * 0.4
-        amp_guess = np.ones(10) * 4
+        wid_guess = np.ones(20) * 0.4
+        amp_guess = np.ones(20) * 4
         guess = np.concatenate([wid_guess, amp_guess])
         best_vals, _ = curve_fit(gaussian, x, y, maxfev=100000, method='trf', p0=guess)
     return best_vals

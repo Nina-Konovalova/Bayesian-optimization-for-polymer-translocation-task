@@ -8,6 +8,7 @@ from data_frotran_utils import *
 import subprocess
 import math
 import matplotlib.pyplot as plt
+import Config as CFG
 
 subprocess.call(["gfortran", "-o", "outputic", "F.f90"])
 seed(12354)
@@ -16,52 +17,24 @@ seed(12354)
 class BayesianOptimization:
     def __init__(self, model_type, X_true, exp_number=1, kernel=None):
         self.model_type = model_type
-        self.points_polymer = np.arange(51)
+        self.points_polymer = np.arange(CFG.MONOMERS)
         self.exp_number = exp_number
-        max_amp = np.max(abs(X_true)) * 100
-        self.space = [{'name': 'var_1', 'type': 'continuous', 'domain': (0, 400)},
-                      {'name': 'var_2', 'type': 'continuous', 'domain': (0, 400)},  # 2
-                      {'name': 'var_3', 'type': 'continuous', 'domain': (0, 400)},
-                      {'name': 'var_4', 'type': 'continuous', 'domain': (0, 400)},
-                      {'name': 'var_5', 'type': 'continuous', 'domain': (0, 400)},
-                      {'name': 'var_6', 'type': 'continuous', 'domain': (0, 400)},  # 2
-                      {'name': 'var_7', 'type': 'continuous', 'domain': (0, 400)},
-                      {'name': 'var_8', 'type': 'continuous', 'domain': (0, 400)},
-                      {'name': 'var_9', 'type': 'continuous', 'domain': (0, 400)},
-                      {'name': 'var_10', 'type': 'continuous', 'domain': (0, 400)},
-                      {'name': 'var_11', 'type': 'continuous', 'domain': (-100, 100)},
-                      {'name': 'var_12', 'type': 'continuous', 'domain': (-100, 100)},  # 2
-                      {'name': 'var_13', 'type': 'continuous', 'domain': (-100, 100)},
-                      {'name': 'var_14', 'type': 'continuous', 'domain': (-100, 100)},
-                      {'name': 'var_15', 'type': 'continuous', 'domain': (-100, 100)},
-                      {'name': 'var_16', 'type': 'continuous', 'domain': (-100, 100)},  # 2
-                      {'name': 'var_17', 'type': 'continuous', 'domain': (-100, 100)},
-                      {'name': 'var_18', 'type': 'continuous', 'domain': (-100, 100)},
-                      {'name': 'var_19', 'type': 'continuous', 'domain': (-100, 100)},
-                      {'name': 'var_20', 'type': 'continuous', 'domain': (-100, 100)}
-                      ]
-        # -0.52737788, -0.15180059, -0.07312432,  0.64599908, -0.24175772,
-        #         0.33555477,  0.22559383, -0.18472227, -0.08064132, -0.58839876,
-        #         0.69749632, -0.33246393,  0.72968321])
+        self.space = CFG.SPACE
+        self.constraints = CFG.CONSTRAINTS
 
-        self.constraints = [{'name': 'constr_1', 'constraint': 'abs(x[:,10])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,0]'},
-                            {'name': 'constr_2', 'constraint': 'abs(x[:,11])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,1]'},
-                            {'name': 'constr_3', 'constraint': 'abs(x[:,12])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,2]'},
-                            {'name': 'constr_4', 'constraint': 'abs(x[:,13])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,3]'},
-                            {'name': 'constr_5', 'constraint': 'abs(x[:,14])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,4]'},
-                            {'name': 'constr_6', 'constraint': 'abs(x[:,15])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,5]'},
-                            {'name': 'constr_7', 'constraint': 'abs(x[:,16])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,6]'},
-                            {'name': 'constr_8', 'constraint': 'abs(x[:,17])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,7]'},
-                            {'name': 'constr_9', 'constraint': 'abs(x[:,18])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,8]'},
-                            {'name': 'constr_10', 'constraint': 'abs(x[:,19])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,9]'}
-                            ]
+        if kernel == 'Matern52':
+            kernel = GPy.kern.Matern52(1)
+        elif kernel == 'Matern32':
+            kernel = GPy.kern.Matern32(1)
+        elif kernel == 'RBF':
+            kernel = GPy.kern.RBF(1)
+        elif kernel == 'ExpQuad':
+            kernel == GPy.kern.ExpQuad(1)
+        elif kernel == 'RatQuad':
+            kernel = GPy.kern.RatQuad(1)
+        else:
+            raise KeyError('Invalid kernel type')
 
-        # self.feasible_region = GPyOpt.Design_space(space=self.space, constraints=self.constraints)
-        #kernel = GPy.kern.Matern32(12)
-        # GPy.kern.ExpQuad(12)
-        # GPy.kern.Matern32(12)
-        # GPy.kern.RBF(12)
-        # GPy.kern.RatQuad(12)
         if self.model_type == 'GP':
             if kernel is not None:
                 self.model = GPyOpt.models.GPModel(kernel, optimize_restarts=3, exact_feval=True)
@@ -74,7 +47,6 @@ class BayesianOptimization:
                 self.model = GPyOpt.models.GPModel_MCMC(exact_feval=True)
         elif self.model_type == 'InputWarpedGP':
             if kernel is not None:
-                print('fuck')
                 self.model = GPyOpt.models.WarpedGPModel(GPyOpt.core.task.space.Design_space(self.space), kernel,
                                                          exact_feval=True)  # нужно разобраться со спейсом тут
             else:
@@ -126,7 +98,7 @@ class BayesianOptimization:
             problem = True
             np.save(self.path_for_save + "out_of_space/" + str(x_end[0][0]) + '.npy', x_end)
             plt.figure(figsize=(16, 12))
-            plt.plot(self.points_polymer, self.gaussian(self.points_polymer, *best_vals), 'go--',
+            plt.plot(self.points_polymer, gaussian(self.points_polymer, *best_vals), 'go--',
                      linewidth=4,
                      markersize=2,
                      color='red', label='predicted')
@@ -143,7 +115,7 @@ class BayesianOptimization:
             print((old_der > 4).sum())
             np.save(self.path_for_save + "big_rate/" + str(x_end[0][0]) + '.npy', x_end)
             plt.figure(figsize=(16, 12))
-            plt.plot(self.points_polymer, self.gaussian(self.points_polymer, *best_vals), 'go--',
+            plt.plot(self.points_polymer, gaussian(self.points_polymer, *best_vals), 'go--',
                      linewidth=4,
                      markersize=2,
                      color='red', label='predicted')
@@ -159,7 +131,7 @@ class BayesianOptimization:
             np.save(self.path_for_save + "bigger_1/" + "bigger_1_" + change + "_" + str(x_end[0][0]) + '.npy',
                     x_end)
             plt.figure(figsize=(16, 12))
-            plt.plot(self.points_polymer, self.gaussian(self.points_polymer, *best_vals), 'go--',
+            plt.plot(self.points_polymer, gaussian(self.points_polymer, *best_vals), 'go--',
                      linewidth=4,
                      markersize=2,
                      color='red', label='predicted')
@@ -210,5 +182,4 @@ class BayesianOptimization:
         plt.legend()
         path_for_save = path_for_save + 'experiment_' + str(self.exp_number)
         plt.savefig(path_for_save + '.png')
-        # npz.save('model.npz', model = myBopt.model)
         return best_vals

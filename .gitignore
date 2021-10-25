@@ -1,6 +1,9 @@
 *.png
 *.jpg
+*.txt
 .idea/
 __pycache__/
 venv/
 outputic.exe
+experiments/
+experients_1/
