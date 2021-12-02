@@ -1,26 +1,26 @@
 import GPy
 import GPyOpt
-import numpy as np
 from sklearn.metrics import mean_squared_error as mse
 from numpy.random import seed
-from gauss_fit import *
-from data_frotran_utils import *
+from utils.gauss_fit import *
+from utils.data_frotran_utils import *
 import subprocess
 import math
 import matplotlib.pyplot as plt
-import Config as CFG
+import Configurations.Config as CFG
 
 subprocess.call(["gfortran", "-o", "outputic", "F.f90"])
 seed(12354)
 
 
 class BayesianOptimization:
-    def __init__(self, model_type, X_true, exp_number=1, kernel=None):
+    def __init__(self, model_type, X_true, exp_number, kernel):
         self.model_type = model_type
         self.points_polymer = np.arange(CFG.MONOMERS)
         self.exp_number = exp_number
         self.space = CFG.SPACE
         self.constraints = CFG.CONSTRAINTS
+        kernel = kernel
 
         if kernel == 'Matern52':
             kernel = GPy.kern.Matern52(1)
@@ -109,7 +109,7 @@ class BayesianOptimization:
         rate, y_pos_new, y_neg_new = read_data()
 
         if rate == 1e20:
-            print('fuckup, out of space')
+            print('Out of space')
             problem = True
             old_der = read_derives()
             print((old_der > 4).sum())
@@ -126,7 +126,7 @@ class BayesianOptimization:
             return 1e20, x_end, problem
 
         if rate > 1:
-            print('fuckup', x_end)
+            print('Rate bigger 1', x_end)
             problem = True
             np.save(self.path_for_save + "bigger_1/" + "bigger_1_" + change + "_" + str(x_end[0][0]) + '.npy',
                     x_end)
@@ -149,12 +149,9 @@ class BayesianOptimization:
         diff_new = loss_false + loss_true + loss_rate
         return diff_new, x_end, problem
 
-    def optimization_step(self, x_parametr_pol, y_train, num_steps, path_for_save, acquisition_type='MPI',
+    def optimization_step(self, x_parametr_pol, num_steps, path_for_save, acquisition_type='MPI',
                           normalize=False, num_cores=-1, evaluator_type='lbfgs'):
         self.path_for_save = path_for_save
-        # kernel = GPy.kern.RBF(12)
-        # kernel = GPy.kern.Matern32(12)
-        # kernel = GPy.kern.RatQuad(12)
         myBopt = GPyOpt.methods.BayesianOptimization(f=self.fokker_plank_eq,  # function to optimize
                                                      domain=self.space,
                                                      constraints=self.constraints,  # box-constraints of the problem

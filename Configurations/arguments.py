@@ -25,6 +25,7 @@ def parse_args():
                         help='path_for_experiments')
     parser.add_argument('-kernel', '--kernel_type', default='Matern52', type=str,
                         help='type of kernel')
+
     args = parser.parse_args()
     return args
 
