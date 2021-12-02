@@ -55,6 +55,7 @@ class BayesianOptimization:
 
         self.X_true = X_true
         self.X_param_true = fitting_curves(X_true)
+
         self.Y_pos_real, self.Y_neg_real, self.rate_real = self.probabilities_from_init_distributions(self.X_param_true)
 
     def probabilities_from_init_distributions(self, x_end):
