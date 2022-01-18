@@ -31,10 +31,10 @@ class BayesianOptimization:
         elif kernel == 'ExpQuad':
             kernel == GPy.kern.ExpQuad(1)
         elif kernel == 'RatQuad':
-            kernel = GPy.kern.RatQuad(1)
+            kernel = GPy.kern.RatQuad(20)
         else:
             raise KeyError('Invalid kernel type')
-
+        print(kernel)
         if self.model_type == 'GP':
             if kernel is not None:
                 self.model = GPyOpt.models.GPModel(kernel, optimize_restarts=3, exact_feval=True)
@@ -54,7 +54,7 @@ class BayesianOptimization:
                                                          exact_feval=True)  # нужно разобраться со спейсом тут
 
         self.X_true = X_true
-        self.X_param_true = fitting_curves(X_true)
+        self.X_param_true =  X_true #fitting_curves(X_true)
 
         self.Y_pos_real, self.Y_neg_real, self.rate_real = self.probabilities_from_init_distributions(self.X_param_true)
 
@@ -108,7 +108,8 @@ class BayesianOptimization:
             plt.savefig(path_for_save + '.png')
 
         rate, y_pos_new, y_neg_new = read_data()
-
+        if rate == 0:
+            problem = True
         if rate == 1e20:
             print('Out of space')
             problem = True
@@ -144,15 +145,41 @@ class BayesianOptimization:
         loss_true = mse((y_pos_new[:]), (self.Y_pos_real[:]))
         loss_false = mse((y_neg_new[:]), (self.Y_neg_real[:]))
         loss_rate = abs(rate - self.rate_real)
-        loss_rate *= 10 ** (-int(math.log((2 * loss_rate) / (loss_true + loss_false), 10)))
-
+        loss_rate *= 10 ** (-6) #(-int(math.log((2 * loss_rate) / (loss_true + loss_false), 10)))
+        # if loss_true > 10**(-7) or loss_false > 10**(-7):
+        #      problem = True
         # print(rate, self.rate_real)
+        #diff_new = loss_rate# / self.rate_real
+        #print(diff_new)
+        res = {'rate': rate,'mse_true': loss_true, 'mse_false': loss_false}
+
+        # if not self.opt:
+        #
+        #     if self.exp_number == 0:
+        #         plt.figure(figsize=(16, 12))
+        #         plt.plot(new_curv)
+        #         plt.savefig(self.path_for_save + 'initial' + '/' + 'pic' + str(self.step) + '.jpg')
+        #         self.step += 1
+        if not problem:
+            if self.opt:
+                plt.figure(figsize=(16, 12))
+                plt.plot(new_curv)
+
+                plt.savefig(self.path_for_save + str(self.exp_number) + '/' + 'pic' + str(self.step) + '.jpg')
+                self.step += 1
+                self.data_out = self.data_out.append(res, ignore_index=True)
+                #print(self.data_out)
+                self.data_out.to_csv('experiment_3/step_16/results_compare_' + str(self.rate_real) + '.csv', index=False)
+                self.vecs.append(best_vals)
+        print(rate, self.rate_real)
         diff_new = loss_false + loss_true + loss_rate
         return diff_new, x_end, problem
 
     def optimization_step(self, x_parametr_pol, num_steps, path_for_save, acquisition_type='MPI',
                           normalize=False, num_cores=-1, evaluator_type='lbfgs'):
         self.path_for_save = path_for_save
+        self.opt = False
+        self.step = 0
         myBopt = GPyOpt.methods.BayesianOptimization(f=self.fokker_plank_eq,  # function to optimize
                                                      domain=self.space,
                                                      constraints=self.constraints,  # box-constraints of the problem
@@ -167,13 +194,20 @@ class BayesianOptimization:
 
         # print('model', myBopt.model.model)
         print('optimization starts')
-        myBopt.run_optimization(num_steps, report_file=path_for_save + 'report_file_' + str(self.exp_number) + '.txt',
+        self.path_for_save = path_for_save
+        self.vecs = []
+        self.step = 0
+        self.data_out = pd.DataFrame(columns=['rate', 'mse_true',
+                                              'mse_false'])
+        self.opt = True
+        myBopt.run_optimization(100, report_file=path_for_save + 'report_file_' + str(self.exp_number) + '.txt',
                                 models_file=path_for_save + 'model_params_' + str(self.exp_number) + '.txt')
 
         best_vals = myBopt.x_opt
+        np.savez_compressed(self.path_for_save + 'opt_points_' + str(self.exp_number) + '.npz', vecs=np.array(self.vecs))
         print(myBopt.model.model)
         plt.figure(figsize=(16, 12))
-        plt.plot(self.points_polymer, self.X_true, label='real X')
+        plt.plot(self.points_polymer, gaussian(self.points_polymer, *self.X_true), label='real X')
         plt.plot(self.points_polymer, gaussian(self.points_polymer, *best_vals), 'go--', linewidth=4,
                  markersize=2,
                  color='red', label='predicted')

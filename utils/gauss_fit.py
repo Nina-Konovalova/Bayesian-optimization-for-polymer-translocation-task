@@ -4,7 +4,9 @@ from scipy.optimize import curve_fit
 
 
 def gaussian(x, *params):
-    cen = np.linspace(3, 53, 10)
+    #cen = np.linspace(3, 53, 10)
+    cen = np.linspace(1, 65, 10)
+    #cen = np.linspace(3, 73, 20)
     wid = params[:len(cen)]
     amp = params[len(cen):]
     gauss = 0
