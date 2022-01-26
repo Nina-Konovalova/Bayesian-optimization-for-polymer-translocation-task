@@ -1,26 +1,10 @@
 # Bayesian optymization for polymer translocation problem
 -----------------------------------------------------------
 ## Intro to a poblem
-Polymer translocation can be considered in terms of random walks along the free energy profile. This process can be described by the Fokker-Planck equation. Depending on the free energy profile different time distributions of successful (unsuccessful) translocation may be obtained. 
+In this problem we are trying to solve problem of reconstruction the free energy landscape for polymer translocation
+knowing information about time distribution for such translocation.
 
-
-The problem, that should be solved, can be formulated the following way. Suppose there is a translocation time distribution for a successful case, a similar time distribution for an unsuccessful translocation, as well as a percentage of successful translocation. It is necessary to reproduce the energy profile corresponding to these conditions as accurately as possible.
-
-## Methods
-This problem is going to be solved using Bayesian optimization \cite{snoek2012practical}. The whole task can be described the following way:
-
-1) First of all the dataset should be constructed. Then this dataset should be parameterized. Different options of parametrization are considered:
- - Chebyshev polynomials with different degrees;
- - Several numbers of Gaussian functions with fixed means;
- - Several numbers of Gaussian functions with optimized means;
-
-2) For each known profile find the corresponding time translocation distribution for successful and unsuccessful translocation and translocation rate.
-
-3) Chose function for minimization: Here we look for MSE for time distributions of successful and unsuccessful distributions for real and not real distributions, summing that with the difference between rates.
-
-4) Using the initial dataset and Gaussian Processes \cite{williams2006gaussian} - build the model for Bayesian optimization is built.
-
-5) Use active learning for optimization
+For more information you may read [proposal.pdf]()
 
 ---------------------------------------------------------
 
@@ -35,35 +19,28 @@ pip install -r requirements.txt
 ```
 
 ------------------------------------------------------------
-## Quick start
+## Quick start and results
 
-1) Make directory for your output results: **<directory_for_output>**. In that directory you should make such folders as
- 
- - **big_rate** - save pictures in *.png* format of landscape and parameters that define this landscape for experimnets, that leads to rate equial 1e20;
- - **bigger_one** - save pictures in *.png* format of landscape and parameters that define this landscape for experimnets, that leads to rate bigger than 1;
- - **out_space** - save pictures in *.png* format of landscape and parameters that define this landscape for experimnets, that contains derivative bigger than 4.
-
-In **<directory_for_output>** will be saves:
-
- - pictures of experiments, that contains initial landscape and predicted landscape;
- - parameters of model for each iteration step;
- - report file with information about experiment.
-
+Make directory for your output results: **<directory_for_output>**. In [Config.py]() change **EXPERIMENT_NAME**
+as you want. In **<directory_for_output>** will be made new one with **EXPERIMENT_NAME**. Then for each experiment new directory
+   will be made with the name equals to the number of experiment. In each dir the following information will be contained:
+   - dir with optimization steps - pictures for each successful optimization step
+    - *experiment_i.png* - picture of true profile (blue color), best from optimization steps (green color), best for optimization (red color)
+    - *model_params_i.txt* - parameters for model (kernel hyperparameters)
+    - *predicted_data.json* - all optimization steps with vector of parameters for each step and value of target function.
+    Also best predicted result vector, best vector of parameters for just optimization steps and real vector of parameters for landcape
+   - *report_file.txt* - some information about experiment
+   - *results_compare_a.csv* - file with different loss functions for each successful step (mse loss, rate loss, and so on)
 
 To run your test video just run:
 
 ```
-python main.py -p <directory_for_output>
+python main_2.py -p <directory_for_output>
 ```
 
 For detailed information about arguments, that can be changed, you can read [Documentation.md]().
 
 -------------------------------------------------------------
-## Results
-
-The results for different kernels and different numbers of gaussians can be found via link.
-
---------------------------------------------------------------
 
 ## Compare time distribution and rate for predicted and initial landscapes.
 

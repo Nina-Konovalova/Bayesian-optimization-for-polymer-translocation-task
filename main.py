@@ -22,7 +22,7 @@ def optimization(args):
     x_parameter_pol = np.concatenate([x_parameter_pol, x_parameter_pol2])
     print('shape', x_parameter_pol.shape)
 
-    for i in range(2, len(x_e)):
+    for i in range(13, len(x_e)):
         print('experiment', i)
         gp_model = BayesianOptimization(args.model_type, x_e[i], i, args.kernel_type)
         gp_model.optimization_step(x_parameter_pol, args.number_steps,
