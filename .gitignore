@@ -1,6 +1,12 @@
 *.png
+*.npy
 *.jpg
 *.txt
+*.json
+*.npz
+*.zip
+*.csv
+*.pyc
 .idea/
 __pycache__/
 venv/

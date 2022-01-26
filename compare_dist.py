@@ -53,12 +53,14 @@ def make_report_compare(path, x_true, x_pred, MSE_pos, MSE_neg, rate_true, rate_
 
 def main():
     args = parse_args()
-    x_e = pd.read_csv(args.path_experiments)
-    x_e = np.array(x_e)
+    #x_e = pd.read_csv(args.path_experiments)
+    #x_e = np.array(x_e)
+    x_e = np.load('new_test_10.npz')['vecs']
     path = args.path_for_save #'experiments_1/GP/rbf/not_normalized/MPI/lbfgs/gauss_20_200/'
-    for i in range(len(x_e)):
+    for i in range(22, 49):#len(x_e)):
         x_predicted = read_data_from_file(path + 'report_file_' + str(i) + '.txt')
-        x_true = fitting_curves(x_e[i])
+        #x_true = fitting_curves(x_e[i])
+        x_true = x_e[i]
         print(len(x_true))
 
         y_pos_new, y_neg_new, rate = probabilities_from_init_distributions(x_true)
@@ -68,10 +70,10 @@ def main():
         fig.suptitle(abs(rate - rate_pred))
         ax1.plot(y_pos_new, label='true')
         ax1.plot(y_pos_new_pred, label='pred')
-        #ax1.set_yscale('log')
+        ax1.set_yscale('log')
         ax2.plot(y_neg_new, label='true')
         ax2.plot(y_neg_new_pred, label='pred')
-        #ax2.set_yscale('log')
+        ax2.set_yscale('log')
         ax1.legend()
         ax2.legend()
         MSE_pos = mse((y_pos_new[:]), (y_pos_new_pred[:]))

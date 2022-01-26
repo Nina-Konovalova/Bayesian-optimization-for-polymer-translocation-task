@@ -23,7 +23,9 @@ def parse_args():
                         help='path_for_saving_images')
     parser.add_argument('-exp', '--path_experiments', default='experimental_data.csv', type=str,
                         help='path_for_experiments')
-    parser.add_argument('-kernel', '--kernel_type', default='Matern52', type=str,
+    parser.add_argument('--x_parameter_pol_path', default='init_dataset_3000.npz', type=str,
+                        help='path_for_train_data')
+    parser.add_argument('-kernel', '--kernel_type', default='RatQuad', type=str,
                         help='type of kernel')
 
     args = parser.parse_args()
