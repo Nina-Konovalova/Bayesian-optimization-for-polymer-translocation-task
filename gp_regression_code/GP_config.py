@@ -1,19 +1,19 @@
 import GPy
 import numpy as np
 
-INPUT_DIM = 10
+INPUT_DIM = 6
 
 GRID = {
     'RatQuad': GPy.kern.RatQuad(INPUT_DIM),
     'Matern52': GPy.kern.Matern52(INPUT_DIM),
     'Matern32': GPy.kern.Matern32(INPUT_DIM),
-    'RBF': GPy.kern.RBF(INPUT_DIM),
-    'EXPQuad': GPy.kern.ExpQuad(INPUT_DIM),
-    'sum_gaussians_RatQuad': GPy.kern.RatQuad(2, active_dims=[0, 5]) +
-                             GPy.kern.RatQuad(2, active_dims=[1, 6]) +
-                             GPy.kern.RatQuad(2, active_dims=[2, 7]) +
-                             GPy.kern.RatQuad(2, active_dims=[3, 8]) +
-                             GPy.kern.RatQuad(2, active_dims=[4, 9])
+    #'RBF': GPy.kern.RBF(INPUT_DIM),
+    #'EXPQuad': GPy.kern.ExpQuad(INPUT_DIM),
+    # 'sum_gaussians_RatQuad': GPy.kern.RatQuad(2, active_dims=[0, 5]) +
+    #                          GPy.kern.RatQuad(2, active_dims=[1, 6]) +
+    #                          GPy.kern.RatQuad(2, active_dims=[2, 7]) +
+    #                          GPy.kern.RatQuad(2, active_dims=[3, 8]) +
+    #                          GPy.kern.RatQuad(2, active_dims=[4, 9])
     }
 
 # GRID = {'sum_Matern52_RatQuad_20': GPy.kern.Matern52(2, active_dims=[0, 10]) + GPy.kern.Matern52(2,
