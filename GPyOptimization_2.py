@@ -125,7 +125,7 @@ class BayesianOptimization:
                 pass
             np.save(self.path_for_save + "out_of_space/" + str(x_end[0][0]) + '.npy', x_end)
 
-        rate, y_pos_new, y_neg_new = read_data()
+        rate, time, y_pos_new, y_neg_new = read_data()
 
         if rate == 1e20 or rate == 0:
             print('Out of space')
@@ -213,6 +213,17 @@ class BayesianOptimization:
 
         best_vals = myBopt.x_opt
         best_vals_opt = np.array(self.opt_steps['vecs'])[np.argmin(np.array(self.opt_steps['loss']))]
+
+
+        new_curv = gaussian(self.points_polymer, *best_vals)
+        make_input_file(new_curv)
+        subprocess.check_output(["./outputic"])
+        rate, time, y_pos_new, y_neg_new = read_data()
+        angs = self.angle(y_pos_new, y_neg_new)
+        diff_new, loss_rate, loss_angs, loss_mse = self.function(self.rate_real, self.angs_real,
+                                                                 self.y_pos_real, self.y_neg_real, rate,
+                                                                 angs, y_pos_new, y_neg_new)
+
         with open(path_for_save + 'predicted_data.json', 'w',
                   encoding='utf-8') as f:
             json.dump({'predictions_best': best_vals.tolist(), 'prediction_from_opt': best_vals_opt.tolist(),

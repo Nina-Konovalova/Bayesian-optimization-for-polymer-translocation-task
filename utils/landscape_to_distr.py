@@ -16,3 +16,4 @@ def probabilities_from_init_distributions(x_end):
         rate, time, y_pos_new, y_neg_new = read_data()
         return y_pos_new, y_neg_new, rate, time
 
+
