@@ -17,7 +17,7 @@ Each of these files has to be in **.npz** format and contain information about:
 - *'angs'* - angle of slope for logarithmic time distribution ([successful angle, unsuccessful angle]).
 
 Also, you can change in different ways the target function for approximation.
-To do it - just change `function()` in [help_functions.py](). You can choose any combination of rate, times, angles and time distributions.
+To do it - just change `function()` in [help_functions.py](https://github.com/Nina-Konovalova/bayes_experiment/blob/main/utils/help_functions.py). You can choose any combination of rate, times, angles and time distributions.
 Now it is set as `angles_difference + ALPHA * rates_difference` and the `ALPHA` can be chosen in
 [GP_config.py](https://github.com/Nina-Konovalova/bayes_experiment/blob/main/gp_regression_code/GP_config.py).
 

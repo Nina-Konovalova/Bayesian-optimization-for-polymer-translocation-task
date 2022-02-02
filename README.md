@@ -4,7 +4,7 @@
 In this problem we are trying to solve problem of reconstruction the free energy landscape for polymer translocation
 knowing information about time distribution for such translocation.
 
-For more information you may read [proposal.pdf](https://github.com/Nina-Konovalova/bayes_experiment/tree/main/theory/proposal.pdf)
+For more information you may read [Proposal.pdf](https://github.com/Nina-Konovalova/bayes_experiment/blob/main/theory/Proposal.pdf)
 
 ---------------------------------------------------------
 
@@ -23,7 +23,7 @@ and change GPy library
 ------------------------------------------------------------
 ## Quick start and results
 
-Make directory for your output results: **<directory_for_output>**. In [Config.py]() change **EXPERIMENT_NAME**
+Make directory for your output results: **<directory_for_output>**. In [Config.py](https://github.com/Nina-Konovalova/bayes_experiment/blob/main/Configurations/Config.py) change **EXPERIMENT_NAME**
 as you want. In **<directory_for_output>** will be made new one with **EXPERIMENT_NAME**. Then for each experiment new directory
    will be made with the name equals to the number of experiment. In each dir the following information will be contained:
    - dir with optimization steps - pictures for each successful optimization step

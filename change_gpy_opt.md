@@ -133,7 +133,7 @@ def evaluate_objective(self):
         self.cost.update_cost_model(self.suggested_sample, cost_new)
         self.Y = np.vstack((self.Y,self.Y_new))
 ```
-3) Then find **GPyOpt\core\task\objective.py** and change functions:
+3) Then find **GPyOpt/core/task/objective.py** and change functions:
 
 ```buildoutcfg
 def evaluate(self, x):
