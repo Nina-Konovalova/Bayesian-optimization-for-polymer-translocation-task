@@ -1,18 +1,27 @@
+import GPy
+
 ALPHA = 0.2
 
-TRAIN_PATH = 'dataset_3_gaussians_small_1/exp_gaussians_3_train.npz'
-EXP_PATH = 'dataset_3_gaussians_small_1/exp_gaussians_3_exp.npz'
-SAVE_PATH = 'experiment_3_gaussians_small_1/'
-NUM_STEPS = 250
+NUM_GAUSS = 3
+
+INPUT_DIM = 3
+
+KERNEL_RQ = GPy.kern.RatQuad(INPUT_DIM)
+KERNEL_M32 = GPy.kern.Matern32(INPUT_DIM)
+KERNEL_M52 = GPy.kern.Matern52(INPUT_DIM)
+KERNEL_RBF = GPy.kern.RBF(INPUT_DIM)
+KERNEL_EQ = GPy.kern.ExpQuad(INPUT_DIM)
+
+KERNEL = KERNEL_RQ
+
+TRAIN_PATH = 'dataset_3_gaussians_small_3/exp_gaussians_3_train.npz'
+EXP_PATH = 'dataset_3_gaussians_small_3/exp_gaussians_3_exp.npz'
+SAVE_PATH = 'experiment_3_gaussians_small_3/'
+NUM_STEPS = 2
 
 EXPERIMENT_NAME = 'angs_0.2_Matern32/'
 
 MONOMERS = 51
-
-NUM_GAUSS = 3
-
-CATS = ['vecs', 'rates', 'angs', 'y_pos', 'y_neg']
-
 
 SPACE_5 = [             {'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)},
                       {'name': 'var_2', 'type': 'continuous', 'domain': (0, 50)},  # 2

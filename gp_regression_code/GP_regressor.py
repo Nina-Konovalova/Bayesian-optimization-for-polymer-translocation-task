@@ -18,13 +18,15 @@ class GPRegressor:
         self.save_predictions = save_predictions
 
     def optimization(self, X, Y):
-        #noise_var = Y.var() * 0.01
+        '''
+        :param X: data
+        :param Y: targets
+        :return: GP approximation model
+        '''
         m = GPy.models.GPRegression(X, Y, self.kernel)
-        m.Gaussian_noise.constrain_fixed(1e-12, warning=False)
         m.Gaussian_noise.variance = 1e-12
         m.Gaussian_noise.variance.constrain_fixed() # fixe noise as now we use noiseless evaluation
         m.optimize_restarts(num_restarts=self.num_restarts)
-
         if self.save_model_path is not None:
             m.save_model(self.save_model_path)
         return m
@@ -35,8 +37,8 @@ class GPRegressor:
         :param x_test: data to predict
         :return: mean value for prediction, variance for the prediction
         '''
-        y_pred = m.predict(x_test, False, include_likelihood=False)  # ???
-        return y_pred[0], y_pred[1]
+        y_pred = m.predict(x_test, include_likelihood=False)  # This doesn't includes the likelihood variance added to the predicted underlying function
+        return y_pred
 
     def criterion(self, pred, target):
         '''

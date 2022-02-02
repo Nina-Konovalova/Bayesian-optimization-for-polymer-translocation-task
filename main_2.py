@@ -7,11 +7,14 @@ import os
 
 def optimization(args):
     x_e = np.load(CFG.EXP_PATH)
+    print(f'experimental dataset contains {x_e["vecs"].shape[0]} elements')
     try:
+        print(f'make dir {CFG.SAVE_PATH}')
         os.mkdir(CFG.SAVE_PATH)
     except:
         pass
     try:
+        print(f'in dir {CFG.SAVE_PATH} make new dir {CFG.EXPERIMENT_NAME}')
         os.mkdir(CFG.SAVE_PATH + CFG.EXPERIMENT_NAME)
     except:
         pass
@@ -21,9 +24,8 @@ def optimization(args):
             os.mkdir(CFG.SAVE_PATH + CFG.EXPERIMENT_NAME + str(i) + '/')
         except:
             pass
-        gp_model = BayesianOptimization(args.model_type, x_e, i, args.kernel_type)
-        gp_model.optimization_step(CFG.TRAIN_PATH, CFG.NUM_STEPS,
-                                   CFG.SAVE_PATH + CFG.EXPERIMENT_NAME + str(i) + '/', args.acquisition_type)
+        gp_model = BayesianOptimization(args.model_type, x_e, i,  CFG.SAVE_PATH + CFG.EXPERIMENT_NAME + str(i) + '/', True)
+        gp_model.optimization_step(CFG.TRAIN_PATH, CFG.NUM_STEPS, args.acquisition_type)
 
 
 

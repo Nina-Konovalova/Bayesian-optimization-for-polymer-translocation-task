@@ -5,8 +5,6 @@
 
 ### Model's parameters
 
-`--kernel_type` or `-kernel` - type of kernel, that should be used. Default - **Matern52**, another options: **RatQuad, ExpQuad, RBF, Matern32**;
-
 `--model_type` or `-model` - type of model. Default - **GP**. Other possible options: **GP_MCMC**;
 
 ### Optimization parameters
@@ -19,14 +17,6 @@
 
 `--num_cores` or `-c` - number of used cores. Default - **1**;
 
-`--number_steps` or `-steps` - number of optimization steps. Default - **70**.
-
-### Other parameters
-
-`--path_for_save` or `-p` - path for saving outputs of experiments.
-
-`--path_experiments` or `-exp` - path for experimental data. Default - **experimental_data.csv**
-
 
 ---------------------------------------------------
 
@@ -36,9 +26,27 @@
 
 `MONOMERS` - number of monomers. Default - **51**;
 
-`SPACE` - space for optimization. Now for **20 gaussians**;
+`NUM_GAUSS` - number of gaussians in the experiment;
 
-`CONSTRAINTS` - constraints for optimization. Now for **20 gaussians**.
+`INPUT_DIM` - kernel dim, usually the same as `NUM_GAUSS`;
+
+`KERNEL` - kernel for GP model, you can choose one of the kernels in config file or make your own;
+
+`TRAIN_PATH` - path to train dataset (*.npz* file);
+
+`EXP_PATH` - path to experimental dataset (*.npz* file);
+
+`SAVE_PATH` - path to save results;
+
+`NUM_STEPS` - number of optimization steps;
+
+`EXPERIMENT_NAME` - name of an experiment, should contain '/' at the end;
+
+`SPACE` - space for optimization. It is a dict, that have the following keys: [3,4,5,10,15,20] and
+necessary key is equal the number of gaussians. 
+
+`CONSTRAINTS` - constraints for optimization. It is a dict, that have the following keys: [3,4,5,10,15,20] and
+necessary key is equal the number of gaussians. 
 
 
 

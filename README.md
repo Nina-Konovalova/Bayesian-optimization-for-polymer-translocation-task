@@ -4,7 +4,7 @@
 In this problem we are trying to solve problem of reconstruction the free energy landscape for polymer translocation
 knowing information about time distribution for such translocation.
 
-For more information you may read [proposal.pdf]()
+For more information you may read [proposal.pdf](https://github.com/Nina-Konovalova/bayes_experiment/tree/main/theory/proposal.pdf)
 
 ---------------------------------------------------------
 
@@ -17,6 +17,8 @@ To install this dependencies run
 ```
 pip install -r requirements.txt
 ```
+Also you have to check [change_gpy_opt.py](https://github.com/Nina-Konovalova/bayes_experiment/blob/main/change_gpy_opt.md)
+and change GPy library
 
 ------------------------------------------------------------
 ## Quick start and results
@@ -38,7 +40,7 @@ To run your test video just run:
 python main_2.py -p <directory_for_output>
 ```
 
-For detailed information about arguments, that can be changed, you can read [Documentation.md]().
+For detailed information about arguments, that can be changed, you can read [Documentation.md](https://github.com/Nina-Konovalova/bayes_experiment/blob/main/DOCUMENTATION.MD).
 
 -------------------------------------------------------------
 
@@ -48,7 +50,7 @@ There is also possibilities to make files of comparison, that contains informati
 
 1) true and predicted parameters for landscapes;
  
-2) MSE for time diatributions for true and predicted landscapes
+2) MSE for time distributions for true and predicted landscapes
 
 3) rates for true and predicted landscapes and their difference.
 

@@ -1,12 +1,19 @@
 import GPy
-import numpy as np
+# TRAIN_PATH = '../dataset_3_gaussians_small_1/exp_gaussians_3_train.npz'
+# TEST_PATH = '../dataset_3_gaussians_small_1/exp_gaussians_3_test.npz'
+# VAL_PATH = '../dataset_3_gaussians_small_1/exp_gaussians_3_exp.npz'
+TRAIN_PATH = '../dataset_3_gaussians_small_3/exp_gaussians_3_train.npz'
+TEST_PATH = '../dataset_3_gaussians_small_3/exp_gaussians_3_test.npz'
+VAL_PATH = '../dataset_3_gaussians_small_3/exp_gaussians_3_exp.npz'
+
+ALPHA = 0.2 #10 #0 1
 
 INPUT_DIM = 6
 
 GRID = {
     'RatQuad': GPy.kern.RatQuad(INPUT_DIM),
     'Matern52': GPy.kern.Matern52(INPUT_DIM),
-    'Matern32': GPy.kern.Matern32(INPUT_DIM),
+    #'Matern32': GPy.kern.Matern32(INPUT_DIM),
     #'RBF': GPy.kern.RBF(INPUT_DIM),
     #'EXPQuad': GPy.kern.ExpQuad(INPUT_DIM),
     # 'sum_gaussians_RatQuad': GPy.kern.RatQuad(2, active_dims=[0, 5]) +

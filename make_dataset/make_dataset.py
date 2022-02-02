@@ -7,15 +7,21 @@ import sys
 sys.path.append('../')
 from utils.landscape_to_distr import probabilities_from_init_distributions
 from utils.data_frotran_utils import read_derives
+from utils.help_functions import *
 from numpy import exp
+import config_dataset
 
-x = np.arange(51)
 
+x = np.arange(config_dataset.MONOMERS)
 
 
 
 class MakeDataset:
     def __init__(self, num_of_all_g, dir_name):
+        '''
+        :param num_of_all_g: number of gaussians in experiment, from 3 to 5
+        :param dir_name: name of dir to save
+        '''
         self.num_of_all_g = num_of_all_g
 
         if self.num_of_all_g == 3:
@@ -31,12 +37,6 @@ class MakeDataset:
 
         self.dir_name = dir_name
 
-    @staticmethod
-    def angle(y_pos_new, y_neg_new):
-        xx = np.arange(len(y_pos_new))
-        t_pos = np.polyfit(xx, np.log(y_pos_new), 1)
-        t_neg = np.polyfit(xx, np.log(y_neg_new), 1)
-        return [t_pos[0], t_neg[0]]
 
     def gaussian(self, x, *params):
         '''
@@ -68,6 +68,11 @@ class MakeDataset:
         np.savez_compressed(name + '.npz', vecs=vecs, angs=angs, rates=rates, y_pos=y_pos, y_neg=y_neg, times=times)
 
     def check_data(self, vec):
+        '''
+        :param vec: parametrized initial landscape
+        :return: check if there is any problem and return rate, angles, time distr for successful translocation,
+        time distr for unsuccessful translocation, mean time of translocation, problem (true or false)
+        '''
         problem = False
         y_pos_new, y_neg_new, rate, time = probabilities_from_init_distributions(vec)
         old_der = read_derives()
@@ -78,7 +83,7 @@ class MakeDataset:
             problem = True
             return rate, [0, 0], y_pos_new, y_neg_new, time, problem
         else:
-            a = self.angle(y_pos_new, y_neg_new)
+            a = angle(y_pos_new, y_neg_new)
             if np.isnan(a).sum() != 0 or a == 0:
                 problem = True
                 return 0, 0, 0, 0, 0, problem
@@ -88,10 +93,9 @@ class MakeDataset:
     def make_all_dataset(self, mode):
         data = {}
         for n in self.nums:
-            data[n] = self.make_dict(self.dir_name + n + '_gauss_' + str(self.num_of_all_g) + '_' + mode + '.npz')
+            data[n] = make_dict(self.dir_name + n + '_gauss_' + str(self.num_of_all_g) + '_' + mode + '.npz')
 
         for key in data.keys():
-
             try:
                 vecs_t = np.concatenate([vecs_t, data[key]['vecs']])
                 angs_t = np.concatenate([angs_t, data[key]['angs']])
@@ -113,23 +117,13 @@ class MakeDataset:
 
     def check_data_shape(self, path):
         data = np.load(path)
-        print(data['vecs'].shape)
-        print(data['angs'].shape)
-        print(data['y_neg'].shape)
-        print(data['y_pos'].shape)
-        print(data['rates'].shape)
-        print(data['times'].shape)
+        print('vecs shape', data['vecs'].shape)
+        print('angs shape', data['angs'].shape)
+        print('time distr for success shape', data['y_neg'].shape)
+        print('time distr for unsuccess shape', data['y_pos'].shape)
+        print('rates shape', data['rates'].shape)
+        print('times shape', data['times'].shape)
 
-    def make_dict(self, path):
-        d = {}
-        dat = np.load(path)
-        d['vecs'] = dat['vecs']
-        d['angs'] = dat['angs']
-        d['rates'] = dat['rates']
-        d['y_pos'] = dat['y_pos']
-        d['y_neg'] = dat['y_neg']
-        d['times'] = dat['times']
-        return d
 
     def draw_all_dataset(self, mode):
         data = {}
@@ -139,7 +133,7 @@ class MakeDataset:
             pass
 
         for n in self.nums:
-            data[n] = self.make_dict(self.dir_name + n + '_gauss_' + str(self.num_of_all_g) + '_' + mode + '.npz')
+            data[n] = make_dict(self.dir_name + n + '_gauss_' + str(self.num_of_all_g) + '_' + mode + '.npz')
             try:
                 os.mkdir(self.dir_name + mode + '/' + n + '_gauss')
             except:

@@ -48,7 +48,7 @@ def main():
                                   cfg_dataset.AMPL_AMP_3, cfg_dataset.AMPL_BIAS_3,
                                   cfg_dataset.MODE, cfg_dataset.SAMPLES_NUM_3)
         print('three gaussian ready!')
-    if args.num_of_all_g == 4:
+    elif args.num_of_all_g == 4:
         make_data.one_gaussian(cfg_dataset.STD_AMP_1, cfg_dataset.STD_BIAS_1,
                                cfg_dataset.AMPL_AMP_1, cfg_dataset.AMPL_BIAS_1,
                                cfg_dataset.MODE, cfg_dataset.SAMPLES_NUM_1)
@@ -65,7 +65,7 @@ def main():
                                   cfg_dataset.AMPL_AMP_4, cfg_dataset.AMPL_BIAS_4,
                                   cfg_dataset.MODE, cfg_dataset.SAMPLES_NUM_4)
         print('four gaussian ready!')
-    if args.num_of_all_g == 5:
+    elif args.num_of_all_g == 5:
         make_data.one_gaussian(cfg_dataset.STD_AMP_1, cfg_dataset.STD_BIAS_1,
                                cfg_dataset.AMPL_AMP_1, cfg_dataset.AMPL_BIAS_1,
                                cfg_dataset.MODE, cfg_dataset.SAMPLES_NUM_1)
@@ -97,6 +97,13 @@ def main():
     print('all data!')
     print('check shapes!')
     make_data.check_data_shape(args.dir_name + 'exp_gaussians_' + str(args.num_of_all_g) + '_' + cfg_dataset.MODE + '.npz')
+    try:
+        os.remove('new_input.txt')
+        os.remove('new_output.txt')
+        os.remove('der_output.txt')
+        os.remove('outputic.exe')
+    except:
+        pass
 
 
 if __name__ == '__main__':

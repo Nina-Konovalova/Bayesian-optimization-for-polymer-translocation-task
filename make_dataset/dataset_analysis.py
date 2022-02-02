@@ -111,7 +111,7 @@ def main():
     '''
     parser = argparse.ArgumentParser(description='End-to-end inference')
     parser.add_argument('--path_to_data',
-                        default='../dataset_3_gaussians_small/exp_gaussians_3_train_t.npz',
+                        default='../dataset_3_gaussians_small_3/exp_gaussians_3_train.npz',
                         type=str,
                         metavar='PATH',
                         help='Path to dir for saving data')

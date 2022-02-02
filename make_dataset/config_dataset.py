@@ -1,4 +1,6 @@
-MODE = 'train'
+MODE = 'exp'
+
+MONOMERS = 51
 
 AMPL_AMP_1 = 10
 AMPL_AMP_2 = 10

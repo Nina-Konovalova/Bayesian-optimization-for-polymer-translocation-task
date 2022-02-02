@@ -6,7 +6,7 @@ sys.path.append('../')
 import Configurations.Config as cfg
 
 
-def gaussian(x, *params):
+def gaussian(x, params):
     '''
     :param x: array from 0 to number of monomers
     :param params: vector of parameters for free energy landscape
@@ -14,13 +14,16 @@ def gaussian(x, *params):
     '''
 
     eps = 1e-18
-    cen = np.linspace(10, 50, 3)
+    cen = np.linspace(10, 50, cfg.NUM_GAUSS)
     #cen = np.linspace(11, 81, 20)
    # cen = np.linspace(11, 81, 15)
+    #sprint(params)
     wid = params[:len(cen)]
     amp = params[len(cen):]
     gauss = 0
-    #print(cen)
+    # print('wid,=', (wid))
+    # print('amp',(amp))
+    # print((cen))
     for i in range(len(cen)):
         gauss += amp[i] * 1 / (np.sqrt((wid[i] + eps) * 2 * np.pi)) * exp(-(x - cen[i]) ** 2 / (2 * (wid[i] + eps)))
     return gauss
