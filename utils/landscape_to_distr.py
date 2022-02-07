@@ -9,7 +9,7 @@ def probabilities_from_init_distributions(x_end):
         :return: y_pos_new, y_neg_new, rate, time
         '''
         best_vals = x_end
-        y = gaussian(np.arange(51), *best_vals)
+        y = gaussian(np.arange(51), best_vals)
         make_input_file(y)
         subprocess.check_output(["./outputic"])
         # saving new output data
