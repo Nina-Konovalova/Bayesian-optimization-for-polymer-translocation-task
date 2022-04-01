@@ -36,20 +36,37 @@ def read_derives(path_to_file='./der_output.txt'):
         return derives
 
 
-def read_data(path_to_file='./new_output.txt'):
+def read_data(path_to_file='./new_output.txt', N=50):
     '''
     :param path_to_file: path to output from fortran program
     :return: rate, time, y_pos_new, y_neg_new, got from FP equation solution
     '''
     dat = pd.read_csv(path_to_file, sep=' ', skiprows=[0, 1, 2], header=None)
     dat.drop(dat.columns[0], axis=1, inplace=True)
-    dat.fillna(1e+20, inplace=True)
+    #dat.fillna(1e+20, inplace=True)
     r = pd.read_csv('./new_output.txt', sep=' ', nrows=2, header=None)
-    r.fillna(1e+20, inplace=True)
-    rate = np.array(r)[0][11]
-    rate = float(rate)
-    time = [np.array(r)[0][13], float(np.array(r)[1][10])]
-    y_pos_new = np.array(dat[1][:], dtype=float)
-    y_neg_new = np.array(dat[2][:], dtype=float)
+    #r.fillna(1e+20, inplace=True)
+
+    if N < 11:
+        rate = np.array(r)[0][12]
+        rate = float(rate)
+        time = [np.array(r)[0][14], float(np.array(r)[1][11])]
+        y_pos_new = np.array(dat[1][:], dtype=float)
+        y_neg_new = np.array(dat[2][:], dtype=float)
+    elif N < 101:
+        rate = np.array(r)[0][11]
+        rate = float(rate)
+        time = [np.array(r)[0][13], float(np.array(r)[1][10])]
+        y_pos_new = np.array(dat[1][:], dtype=float)
+        y_neg_new = np.array(dat[2][:], dtype=float)
+    elif N < 1001:
+        rate = np.array(r)[0][10]
+        rate = float(rate)
+        time = [np.array(r)[0][12], float(np.array(r)[1][10])]
+        y_pos_new = np.array(dat[1][:], dtype=float)
+        y_neg_new = np.array(dat[2][:], dtype=float)
+
+    del dat
+    del r
 
     return rate, time, y_pos_new, y_neg_new
