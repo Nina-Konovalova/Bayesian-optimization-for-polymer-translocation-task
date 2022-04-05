@@ -89,7 +89,8 @@ class MakeDatasetMass:
             print(np.array(all_samples_distributions).shape)
             all_samples_distributions_sum.append(np.array(final_time_d_array).sum(axis=0))
 
-        np.savez_compressed(self.path_to_save + self.regime + '/' + 'samples_info.npz',
+        np.savez_compressed(self.path_to_save + self.regime + '/' +
+                            'sample_data/' + 'samples_info.npz',
                             shape=shape, scale=scale,
                             all_samples_distributions=np.array(all_samples_distributions),
                             all_samples_distributions_sum=np.array(all_samples_distributions_sum)

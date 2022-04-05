@@ -12,7 +12,7 @@ def main():
                         metavar='PATH',
                         help='Path to dir for saving data')
     parser.add_argument('--num_of_samples',
-                        default=12,
+                        default=120,
                         type=int,
                         help='Number of all sample')
     parser.add_argument('--mode',

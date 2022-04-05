@@ -17,7 +17,7 @@ from utils.help_functions import function, angle, make_data
 def main():
     parser = argparse.ArgumentParser(description='End-to-end inference')
     # configuration and regime
-    parser.add_argument('--save_path', default='gp_regression_results_3_gaussians_small_3/', type=str,
+    parser.add_argument('--save_path', default='gp_regression_results_0_gaussians_small_3/', type=str,
                         metavar='PATH',
                         help='Path to dir for saving data')
 

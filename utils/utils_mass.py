@@ -41,7 +41,7 @@ def make_data(all_samples_distributions_sum_real, all_samples_distributions_sum_
     '''
 
     f = []
-    print(all_samples_distributions_sum_real)
+
     for i in (range(len(all_samples_distributions_sum_train))):
         f.append(mse(all_samples_distributions_sum_real, all_samples_distributions_sum_train[i]))
 

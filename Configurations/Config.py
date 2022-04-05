@@ -14,12 +14,16 @@ KERNEL_EQ = GPy.kern.ExpQuad(INPUT_DIM)
 
 KERNEL = KERNEL_RQ
 
-TRAIN_PATH = 'dataset_3_gaussians_small_3/exp_gaussians_3_train.npz'
-EXP_PATH = 'dataset_3_gaussians_small_3/exp_gaussians_3_exp.npz'
-SAVE_PATH = 'experiment_3_gaussians_small_3/'
+# TRAIN_PATH = 'dataset_3_gaussians_small_3/exp_gaussians_3_train.npz'
+# EXP_PATH = 'dataset_3_gaussians_small_3/exp_gaussians_3_exp.npz'
+# SAVE_PATH = 'experiment_3_gaussians_small_3/'
+
+TRAIN_PATH = 'dataset_mass_0/train/samples_info.npz'
+EXP_PATH = 'dataset_mass_0/exp/samples_info.npz'
+SAVE_PATH = 'experiment_mass/'
 NUM_STEPS = 2
 
-EXPERIMENT_NAME = 'angs_0.2_Matern32/'
+EXPERIMENT_NAME = 'RatQuad/'
 
 MONOMERS = 51
 

@@ -15,6 +15,8 @@ def parse_args():
                         help='if output should be normalized')
     parser.add_argument('-c', '--num_cores', default=-1, type=int,
                         help='num_cores')
+    parser.add_argument('-t', '--task', default='mass_distribution', type=str,
+                        help='translocation or mass distribution recover')
     parser.add_argument('-eval', '--evaluator_type', default='lbfgs', type=str,
                         help='type of acquisition function to use. - ‘lbfgs’: L-BFGS. - ‘DIRECT’: Dividing Rectangles. - ‘CMA’: covariance matrix adaptation')
 
