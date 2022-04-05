@@ -92,17 +92,14 @@ class MakeDatasetMass:
         return np.array(self.shape[array]), np.array(self.scale[array]), np.array(all_samples_distributions_sum)
 
     def data_process(self, group_number):
-        final_time_d_array = []
-        all_samples_distributions = []
-        all_samples_distributions_sum = []
-        for k, sample in tqdm(enumerate(cfg_mass.X)[self.frame_jump_unit * group_number: self.frame_jump_unit * (group_number + 1)]):
-            final_time_d_array.append(self.d[k] * self.g[k])
-        all_samples_distributions.append(final_time_d_array)
-        print(np.array(all_samples_distributions).shape)
-        all_samples_distributions_sum.append(np.array(final_time_d_array).sum(axis=0))
-        #return np.array(all_samples_distributions), np.array(all_samples_distributions_sum)
+        final_time_d_array = np.zeros_like(self.d[0])
+        array = np.arange(len(cfg_mass.X))[self.frame_jump_unit * group_number: self.frame_jump_unit * (group_number + 1)]
+        for k in array:
+            final_time_d_array += (self.d[k] * self.g[k])
 
-    def make_dataset_parallel(self, space_shape, space_scale):
+        return final_time_d_array
+
+    def make_dataset_parallel(self, space_shape, space_scale, parallel_type='samples'):
         '''
         :param space_shape: space for random choice of shape for gamma distributions
         :param space_scale: space for random choice of scale for gamma distributions
@@ -116,28 +113,51 @@ class MakeDatasetMass:
 
         distributions = np.load('../../time_distributions/time_distributions.npz')
         self.d = distributions['time_distributions']
-        all_shape = np.empty(1)
-        all_scale = np.empty(1)
-        all_samples_distributions_sum = np.empty((1, 10_000))
-        p = mp.Pool(self.num_processes)
-        start_time = time.time()
-        result = (p.map(self.data_process_sample, range(self.num_processes)))
-        p.close()
-        p.join()
-        for m in range(self.num_processes):
-            all_shape = np.concatenate((all_shape, result[m][0]))
-            all_scale = np.concatenate((all_scale, result[m][1]))
-            all_samples_distributions_sum = np.concatenate((all_samples_distributions_sum, result[m][2]))
 
-        np.savez_compressed(self.path_to_save + self.regime + '/' +
-                            'sample_data/' + 'samples_info.npz',
-                            shape=all_shape[1:], scale=all_scale[1:],
-                            # all_samples_distributions=np.array(all_samples_distributions),
-                            all_samples_distributions_sum=(all_samples_distributions_sum)[1:]
-                            )
-        end_time = time.time()
-        print(end_time - start_time)
+        if parallel_type == 'samples':
+            all_shape = np.empty(1)
+            all_scale = np.empty(1)
+            all_samples_distributions_sum = np.empty((1, 10_000))
+            p = mp.Pool(self.num_processes)
+            start_time = time.time()
+            result = (p.map(self.data_process_sample, range(self.num_processes)))
+            p.close()
+            p.join()
+            for m in range(self.num_processes):
+                all_shape = np.concatenate((all_shape, result[m][0]))
+                all_scale = np.concatenate((all_scale, result[m][1]))
+                all_samples_distributions_sum = np.concatenate((all_samples_distributions_sum, result[m][2]))
 
+            np.savez_compressed(self.path_to_save + self.regime + '/' +
+                                'sample_data/' + 'samples_info.npz',
+                                shape=all_shape[1:], scale=all_scale[1:],
+                                # all_samples_distributions=np.array(all_samples_distributions),
+                                all_samples_distributions_sum=(all_samples_distributions_sum)[1:]
+                                )
+            end_time = time.time()
+            print(end_time - start_time)
+        else:
+            start_time = time.time()
+            all_samples_distributions_sum = []
+            for i in tqdm(range(self.num_samples)):
+                self.g = gamma.pdf(cfg_mass.X, self.shape[i], scale=self.scale[i])
+                plt.figure(figsize=(16, 12))
+                plt.scatter(cfg_mass.X, self.g, marker='+', color='green')
+                plt.title(f'shape {self.shape[i]}, scale {self.scale[i]}')
+                plt.savefig(self.path_to_save + self.regime + '/sample_images/' + 'sample_' + str(i) + '.jpg')
+                plt.close()
+                p = mp.Pool(self.num_processes)
+                result = (p.map(self.data_process, range(self.num_processes)))
+                p.close()
+                p.join()
+                res = np.zeros_like(self.d[0])
+                for m in range(self.num_processes):
+                    res += (result[m])
+                all_samples_distributions_sum.append(res)
+
+            end_time = time.time()
+            print(end_time - start_time)
+            print(np.array(all_samples_distributions_sum).shape)
 
 
     def make_dataset(self, space_shape, space_scale):
