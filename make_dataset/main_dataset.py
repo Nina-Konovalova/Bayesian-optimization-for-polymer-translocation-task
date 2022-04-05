@@ -14,7 +14,7 @@ def main():
     '''
     parser = argparse.ArgumentParser(description='End-to-end inference')
     parser.add_argument('--dir_name',
-                        default='../dataset_3_gaussians_small_3/',
+                        default='../dataset_3_gaussians_small_0/',
                         type=str,
                         metavar='PATH',
                         help='Path to dir for saving data')

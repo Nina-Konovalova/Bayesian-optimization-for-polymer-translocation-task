@@ -3,6 +3,8 @@
 
 ## Arguments
 
+`--task` or `-t` - task to solve (translocation/mass_distribution.) Default - **mass_distribution**
+
 ### Model's parameters
 
 `--model_type` or `-model` - type of model. Default - **GP**. Other possible options: **GP_MCMC**;

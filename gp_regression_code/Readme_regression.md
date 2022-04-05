@@ -1,6 +1,8 @@
 Approximation the loss function with gaussian processes.
 -------------------------------------------------------
 
+## Translocation task
+
 In this folder you can run experiments to explore the quality of approximation of loss function.
 
 Firstly, it is necessary to tune configuration files.
@@ -40,5 +42,21 @@ In each experimental directory the model, **.npz** file with predicted test resu
 - r2 error
 - explained_variance_score
 
+----------------------------------------
+## Mass distribution task
 
+Here you can solve task of gp approximation for mass distribution task.
 
+Firstly, it is necessary to tune configuration files.
+
+In the file [GP_mass_config.py](https://github.com/Nina-Konovalova/bayes_experiment/blob/main/gp_regression_code/GP_mass_config.py)
+you have to provide paths to train, test and val files. 
+Each of these files has to be in **.npz** format and contain information about:
+
+- *'shape'* for gamma distributions for each sample;
+- *'scale'* for gamma distributions for each sample;
+- *'all_samples_distributions_sum'* results of summation of `gamma(i) x (time_distr x p + time_distr x (1-p))`
+
+Then for each experiment we look at mse for true distribution sum and for train(test) sample.
+
+The metrics, that are considered in this task, are the same as in task for translocation (see above).

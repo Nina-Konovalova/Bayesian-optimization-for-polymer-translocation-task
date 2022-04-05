@@ -149,8 +149,8 @@ class BayesianOptimizationMass:
 
         best_vals = myBopt.x_opt
         best_vals_opt = np.array(self.opt_steps['vecs'])[np.argmin(np.array(self.opt_steps['loss']))]
-        diff_fianl_opt = np.min(np.array(self.opt_steps['loss']))
-        diff_final = self.all_losses(best_vals)
+        diff_final_opt = np.min(np.array(self.opt_steps['loss']))
+        diff_final = myBopt.fx_opt
 
         with open(self.path_for_save + 'predicted_data.json', 'w',
                   encoding='utf-8') as f:
