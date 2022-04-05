@@ -88,16 +88,8 @@ class MakeDatasetMass:
             all_samples_distributions.append(final_time_d_array)
             #print(np.array(all_samples_distributions).shape)
             all_samples_distributions_sum.append(np.array(final_time_d_array).sum(axis=0))
-        self.all_shape = np.concatenate((self.all_shape, self.shape[array]))
-        self.all_scale = np.concatenate((self.all_scale, self.scale[array]))
-        print(self.all_shape.shape)
-        #return np.array(self.shape[array]), np.array(self.scale[array]), np.array(all_samples_distributions_sum)
 
-        # np.savez_compressed(self.path_to_save + self.regime + '/' +
-        #                     'sample_data/' + 'samples_info_' + str(group_number) + '.npz',
-        #                     shape=self.shape, scale=self.scale,
-        #                     #all_samples_distributions=np.array(all_samples_distributions),
-        #                     all_samples_distributions_sum=np.array(all_samples_distributions_sum))
+        return np.array(self.shape[array]), np.array(self.scale[array]), np.array(all_samples_distributions_sum)
 
     def data_process(self, group_number):
         final_time_d_array = []
@@ -124,17 +116,28 @@ class MakeDatasetMass:
 
         distributions = np.load('../../time_distributions/time_distributions.npz')
         self.d = distributions['time_distributions']
-        self.all_shape = np.empty(1)
-        self.all_scale = np.empty(1)
+        all_shape = np.empty(1)
+        all_scale = np.empty(1)
+        all_samples_distributions_sum = np.empty((1, 10_000))
         p = mp.Pool(self.num_processes)
         start_time = time.time()
-        p.map(self.data_process_sample, range(self.num_processes))
+        result = (p.map(self.data_process_sample, range(self.num_processes)))
         p.close()
         p.join()
+        for m in range(self.num_processes):
+            all_shape = np.concatenate((all_shape, result[m][0]))
+            all_scale = np.concatenate((all_scale, result[m][1]))
+            all_samples_distributions_sum = np.concatenate((all_samples_distributions_sum, result[m][2]))
 
+        np.savez_compressed(self.path_to_save + self.regime + '/' +
+                            'sample_data/' + 'samples_info.npz',
+                            shape=all_shape[1:], scale=all_scale[1:],
+                            # all_samples_distributions=np.array(all_samples_distributions),
+                            all_samples_distributions_sum=(all_samples_distributions_sum)[1:]
+                            )
         end_time = time.time()
         print(end_time - start_time)
-        print(self.all_shape[1:].shape)
+
 
 
     def make_dataset(self, space_shape, space_scale):

@@ -92,6 +92,12 @@ It is possible to run this program on several processors:
 ```buildoutcfg
 python main_dataset_mass.py --dir_name=<dir to save dataset> --num_of_samples=<num of samples in dataset> --mode=<train/test/experiment>
 ```
+If you want to make parallel work while making samples in dataset just add:
+
+```buildoutcfg
+python main_dataset_mass.py --dir_name=<dir to save dataset> --num_of_samples=<num of samples in dataset> --mode=<train/test/experiment> --parallel=True --processes=<num_of_processes>
+```
+
 As the result you will have *dir_name/mode* directory and the following results, saved there:
 
 - **sample_images** directory with gamma distribution samples saved as image;
