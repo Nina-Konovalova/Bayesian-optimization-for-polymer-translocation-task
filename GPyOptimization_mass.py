@@ -43,6 +43,12 @@ class BayesianOptimizationMass:
         self.x_true = gamma.pdf(cfg_mass.X, self.x_real[0], scale=self.x_real[1])
         self.y_real = x_e['all_samples_distributions_sum'][exp_number]
 
+        if not os.path.exists('time_distributions/time_distributions.npz'):
+            prepare_distributions()
+
+        distributions = np.load('time_distributions/time_distributions.npz')
+        self.d = distributions['time_distributions']
+
         self.opt_steps = {'vecs': [],
                           'loss': []}
 
@@ -82,11 +88,11 @@ class BayesianOptimizationMass:
         final_time_d_array = []
 
         for i, sample in tqdm(enumerate(cfg_mass.X)):
-            d = landscape_to_distribution_mass(sample, cfg_mass.ENERGY_CONST)
-            if np.isnan(d).sum() != 0:
+
+            if np.isnan(self.d[i]).sum() != 0:
                 problem = True
                 break
-            final_time_d_array.append(d * g[i])
+            final_time_d_array.append(self.d[i] * g[i])
 
         if not problem:
             if self.opt:
@@ -122,10 +128,7 @@ class BayesianOptimizationMass:
 
         y_train = make_data(self.y_real, all_samples_distributions_sum_train)
         x_train = np.concatenate((shape_train.reshape(-1, 1), scale_train.reshape(-1, 1)), axis=1)
-        # print(x_train.shape)
-        # print(x_train)
-        # print('---')
-        # print(self.x_real)
+
         self.opt = False
         myBopt = GPyOpt.methods.BayesianOptimization(f=self.fokker_plank_eq,  # function to optimize
                                                      domain=self.space,

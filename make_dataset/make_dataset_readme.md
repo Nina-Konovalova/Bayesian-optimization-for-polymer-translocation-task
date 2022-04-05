@@ -1,11 +1,24 @@
 # Make your dataset
 ----------------------------------
 
+In this directory it is possible to solve 2 main types of problems:
+
+- **free energy landscape profile recover**
+- **mass distribution profile recover**
+
+
 ## Make dataset for translocation task
 
-Here you can find some instruction for creation dataset. 
+All code to run this problem is placed into *translocation_task* directory.
+First of all, you should go there:
 
-First of all, max number of gaussians in dataset 3, 4 or 5. Dataset contains all possible combination of
+```buildoutcfg
+cd translocation_task
+```
+
+Here you can find some instruction for creation dataset for *translocation task*. 
+
+First of all, max number of gaussians in dataset 1, 2, 3, 4 or 5. Dataset contains all possible combination of
 gaussians from 1 to max number of gaussians and for each possible combination you can set 
 sample numbers. Also, for each number of gaussians it is possible to set
 amplitude and bias for both dispersion and amplitude for each gaussians.
@@ -51,6 +64,12 @@ python dataset_analysis.py --path_to_data=<path_to_npz_file_with_data>
 --------------------------------------------------
 ## Make dataset for mass distribution task
 
+To create dataset for this problem you should go to *mass_distribution_task* directory:
+
+```buildoutcfg
+cd mass_distribution_task
+```
+
 In this task we want to generate dataset for different mass (monomer length).
 
 Dataset contains different samples, that depends on shape and scale for mass distribution. 
@@ -68,7 +87,7 @@ And then this value multiply on `gamma_distribution(x_element)`. All such values
 
 So for each gamma distribuion we get the value, described before.
 
-To start creating dataset just run:
+It is possible to run this program on several processors:
 
 ```buildoutcfg
 python main_dataset_mass.py --dir_name=<dir to save dataset> --num_of_samples=<num of samples in dataset> --mode=<train/test/experiment>

@@ -2,7 +2,7 @@ import GPy
 
 ALPHA = 0.2
 
-NUM_GAUSS = 3
+NUM_GAUSS = 2
 
 INPUT_DIM = 3
 
@@ -18,8 +18,8 @@ KERNEL = KERNEL_RQ
 # EXP_PATH = 'dataset_3_gaussians_small_3/exp_gaussians_3_exp.npz'
 # SAVE_PATH = 'experiment_3_gaussians_small_3/'
 
-TRAIN_PATH = 'dataset_mass_0/train/samples_info.npz'
-EXP_PATH = 'dataset_mass_0/exp/samples_info.npz'
+TRAIN_PATH = 'make_dataset/dataset_mass_0/train/sample_data/samples_info.npz'
+EXP_PATH = 'make_dataset/dataset_mass_0/exp/sample_data/samples_info.npz'
 SAVE_PATH = 'experiment_mass/'
 NUM_STEPS = 2
 

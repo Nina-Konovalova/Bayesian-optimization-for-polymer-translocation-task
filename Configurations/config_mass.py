@@ -7,7 +7,7 @@ ENERGY_CONST = 0.
 
 SPACE = [{'name': 'var_1', 'type': 'continuous', 'domain': (5, 15)},  # shape space for gamma distribution
          {'name': 'var_2', 'type': 'continuous', 'domain': (5, 15)},  # scale space for gamma distribution
-        ]
+         ]
 
 INPUT_DIM = 2
 

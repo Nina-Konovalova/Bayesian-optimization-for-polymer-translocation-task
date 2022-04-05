@@ -2,10 +2,13 @@ import subprocess
 import sys
 import numpy as np
 from sklearn.metrics import mean_squared_error as mse
+import os
+from tqdm import tqdm
 
 sys.path.append('../')
 from utils.data_frotran_utils import *
 from numpy.random import seed
+import Configurations.config_mass as cfg_mass
 
 seed(42)
 
@@ -47,6 +50,28 @@ def make_data(all_samples_distributions_sum_real, all_samples_distributions_sum_
 
     return np.array(f)
 
+def prepare_distributions():
+    final_time_d_array = []
+    y_pos = []
+    y_neg = []
+    rate = []
+    times = []
+    for i, sample in tqdm(enumerate(cfg_mass.X)):
+        d, y_pos_new, y_neg_new, rate_new, times_new = landscape_to_distribution_mass(sample, cfg_mass.ENERGY_CONST)
+        final_time_d_array.append(d)
+        y_pos.append(y_pos_new)
+        y_neg.append(y_neg_new)
+        rate.append(rate_new)
+        times.append(times_new)
+
+    try:
+        os.mkdir('../../time_distributions')
+    except:
+        pass
+
+    np.savez_compressed('../../time_distributions/' + 'time_distributions.npz',
+                        time_distributions=np.array(final_time_d_array), rate=np.array(rate), times=np.array(times),
+                        y_pos=np.array(y_pos), y_neg=np.array(y_neg))
 
 def landscape_to_distribution_mass(N, energy_const):
     '''
@@ -64,4 +89,4 @@ def landscape_to_distribution_mass(N, energy_const):
     rate, times, y_pos_new, y_neg_new = read_data(N=N)
     final_time_d = (rate * y_pos_new) + (1 - rate) * y_neg_new
 
-    return final_time_d
+    return final_time_d, y_pos_new, y_neg_new, rate, times

@@ -4,16 +4,14 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import json
 import sys
-sys.path.append('../')
+sys.path.append('../../')
 from utils.landscape_to_distr import probabilities_from_init_distributions
 from utils.data_frotran_utils import read_derives
 from utils.help_functions import *
 from numpy import exp
 import config_dataset
 
-
 x = np.arange(config_dataset.MONOMERS)
-
 
 
 class MakeDataset:
@@ -24,7 +22,11 @@ class MakeDataset:
         '''
         self.num_of_all_g = num_of_all_g
 
-        if self.num_of_all_g == 3:
+        if self.num_of_all_g == 1:
+            self.nums = ['one']
+        elif self.num_of_all_g == 2:
+            self.nums = ['one', 'two']
+        elif self.num_of_all_g == 3:
             self.nums = ['one', 'two', 'three']
         elif self.num_of_all_g == 4:
             self.nums = ['one', 'two', 'three', 'four']
@@ -160,6 +162,7 @@ class MakeDataset:
         y_neg = []
         angs = []
         times = []
+
         for elem in [-1, 1]:
             for position in range(self.num_of_all_g):
                 k = 0

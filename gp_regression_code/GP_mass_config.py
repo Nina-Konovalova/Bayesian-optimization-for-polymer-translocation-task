@@ -1,8 +1,8 @@
 import GPy
 
-TRAIN_PATH = '../dataset_mass_0/train/samples_info.npz'
-TEST_PATH = '../dataset_mass_0/test/samples_info.npz'
-VAL_PATH = '../dataset_mass_0/exp/samples_info.npz'
+TRAIN_PATH = '../make_dataset/dataset_mass_0/train/sample_data/samples_info.npz'
+TEST_PATH = '../make_dataset/dataset_mass_0/test/sample_data/samples_info.npz'
+VAL_PATH = '../make_dataset/dataset_mass_0/exp/sample_data/samples_info.npz'
 
 INPUT_DIM = 2
 

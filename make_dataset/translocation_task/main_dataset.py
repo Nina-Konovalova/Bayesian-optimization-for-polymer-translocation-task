@@ -1,4 +1,3 @@
-import numpy as np
 import seaborn as sns
 import argparse
 import os
@@ -6,7 +5,11 @@ sns.set_theme()
 from make_dataset import MakeDataset
 import config_dataset as cfg_dataset
 import subprocess
-from numpy import exp
+subprocess.call(["gfortran", "-o", "outputic", "../../F.f90"])
+import unittest
+import sys
+sys.path.append('../../')
+import Configurations.Config as CFG
 
 def main():
     '''
@@ -19,7 +22,7 @@ def main():
                         metavar='PATH',
                         help='Path to dir for saving data')
     parser.add_argument('--num_of_all_g',
-                        default=3,
+                        default=1,
                         type=int,
                         help='Number of all gaussians')
     parser.add_argument('--plot', default=False, type=bool, help='whether to illustrate each sample of dataset')
@@ -31,10 +34,31 @@ def main():
     except:
         pass
 
-    subprocess.call(["gfortran", "-o", "outputic", "../F.f90"])
-
     make_data = MakeDataset(args.num_of_all_g, args.dir_name)
-    if args.num_of_all_g == 3:
+    print(args.num_of_all_g)
+
+    message = "nums_of_all_g in arguments should be equal to NUM_GAUSS in Configurations.Config file"
+    assert args.num_of_all_g == CFG.NUM_GAUSS, message
+
+    if args.num_of_all_g == 1:
+
+        make_data.one_gaussian(cfg_dataset.STD_AMP_1, cfg_dataset.STD_BIAS_1,
+                               cfg_dataset.AMPL_AMP_1, cfg_dataset.AMPL_BIAS_1,
+                               cfg_dataset.MODE, cfg_dataset.SAMPLES_NUM_1)
+        print('one gaussian ready!')
+
+    elif args.num_of_all_g == 2:
+
+        make_data.one_gaussian(cfg_dataset.STD_AMP_1, cfg_dataset.STD_BIAS_1,
+                               cfg_dataset.AMPL_AMP_1, cfg_dataset.AMPL_BIAS_1,
+                               cfg_dataset.MODE, cfg_dataset.SAMPLES_NUM_1)
+        print('one gaussian ready!')
+        make_data.two_gaussians(cfg_dataset.STD_AMP_2, cfg_dataset.STD_BIAS_2,
+                                cfg_dataset.AMPL_AMP_2, cfg_dataset.AMPL_BIAS_2,
+                                cfg_dataset.MODE, cfg_dataset.SAMPLES_NUM_2)
+        print('two gaussian ready!')
+
+    elif args.num_of_all_g == 3:
 
         make_data.one_gaussian(cfg_dataset.STD_AMP_1, cfg_dataset.STD_BIAS_1,
                                cfg_dataset.AMPL_AMP_1, cfg_dataset.AMPL_BIAS_1,
@@ -48,6 +72,7 @@ def main():
                                   cfg_dataset.AMPL_AMP_3, cfg_dataset.AMPL_BIAS_3,
                                   cfg_dataset.MODE, cfg_dataset.SAMPLES_NUM_3)
         print('three gaussian ready!')
+
     elif args.num_of_all_g == 4:
         make_data.one_gaussian(cfg_dataset.STD_AMP_1, cfg_dataset.STD_BIAS_1,
                                cfg_dataset.AMPL_AMP_1, cfg_dataset.AMPL_BIAS_1,
