@@ -38,7 +38,7 @@ class GPRegressor:
         :return: mean value for prediction, variance for the prediction
         '''
         y_pred = m.predict(x_test,
-                           include_likelihood=False)  # This doesn't includes the likelihood variance added to the predicted underlying function
+                           include_likelihood=True)  # This doesn't includes the likelihood variance added to the predicted underlying function
         return y_pred
 
     def criterion(self, pred, target):

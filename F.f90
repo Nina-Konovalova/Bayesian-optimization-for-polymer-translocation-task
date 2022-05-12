@@ -16,7 +16,7 @@ integer*4 max_t
 parameter (max_t=100000)
 	
 integer max_s
-parameter (max_s=200)
+parameter (max_s=500)
 
 DOUBLE PRECISION     Ft(0:max_s) ! this is the actual total free energy profile
 	

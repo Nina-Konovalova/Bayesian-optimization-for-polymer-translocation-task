@@ -14,12 +14,13 @@ def gaussian(x, params):
     '''
 
     eps = 1e-18
-    cen = np.linspace(10, 50, cfg.NUM_GAUSS)
+    cen = cfg.CENTERS
+    #cen = np.linspace(10, 50, cfg.NUM_GAUSS)
     #cen = np.linspace(11, 81, 20)
    # cen = np.linspace(11, 81, 15)
     #sprint(params)
     wid = params[:len(cen)]
-    amp = params[len(cen):]
+    amp = params[len(cen):-1] * params[-1] #last variable is +-1
     gauss = 0
     # print('wid,=', (wid))
     # print('amp',(amp))

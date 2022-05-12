@@ -1,10 +1,13 @@
 import GPy
 
-TRAIN_PATH = '../make_dataset/dataset_mass_0/train/sample_data/samples_info.npz'
-TEST_PATH = '../make_dataset/dataset_mass_0/test/sample_data/samples_info.npz'
-VAL_PATH = '../make_dataset/dataset_mass_0/exp/sample_data/samples_info.npz'
+TRAIN_PATH = '../make_dataset/dataset_mass_2_0/train/sample_data/samples_info.npz'
+TEST_PATH = '../make_dataset/dataset_mass_2_0/test/sample_data/samples_info.npz'
+VAL_PATH = '../make_dataset/dataset_mass_2_0/exp/sample_data/samples_info.npz'
 
-INPUT_DIM = 2
+
+PATH_TO_SAVE_PLOTS = 'gp_regression_mass_2_0/plots/'
+
+INPUT_DIM = 4
 
 GRID = {
     'RatQuad': GPy.kern.RatQuad(INPUT_DIM),

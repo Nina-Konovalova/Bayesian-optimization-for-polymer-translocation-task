@@ -14,6 +14,9 @@ def file_analythis_pos(path):
     '''
     data = np.load(path)
     files = ['angs', 'rates', 'times']
+    print(data['rates'].shape)
+    print(data['angs'].shape)
+    print(data['times'].shape)
     for file in files:
         print(os.path.splitext(path)[0] + '_' +  file +  '_distribution_pos.jpg')
         # try:

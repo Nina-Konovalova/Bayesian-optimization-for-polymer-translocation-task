@@ -206,5 +206,5 @@ class BayesianOptimization:
                  color='green', label='predicted only from opt')
         plt.legend()
         path_for_save = self.path_for_save + 'experiment_' + str(self.exp_number)
-        plt.savefig(self.path_for_save + '.png')
+        plt.savefig(path_for_save + '.png')
         return best_vals

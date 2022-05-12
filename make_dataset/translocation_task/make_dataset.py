@@ -167,7 +167,8 @@ class MakeDataset:
             for position in range(self.num_of_all_g):
                 k = 0
                 while k < num_of_samples:
-                    vec = np.zeros(self.num_of_all_g * 2)
+                    vec = np.zeros(self.num_of_all_g * 2 + 1)
+                    vec[-1] = elem
                     vec[:self.num_of_all_g] = 1
                     vec[self.num_of_all_g + position] = (ampl_bias + np.random.rand() * ampl_amp) * elem
                     vec[position] = std_bias + np.random.rand() * std_amp
@@ -201,7 +202,8 @@ class MakeDataset:
                 for j in range(i + 1, self.num_of_all_g):
                     k = 0
                     while k < num_of_samples:
-                        vec = np.zeros(self.num_of_all_g * 2)
+                        vec = np.zeros(self.num_of_all_g * 2 + 1)
+                        vec[-1] = elem
                         vec[:self.num_of_all_g] = 1
                         vec[self.num_of_all_g + i] = (ampl_bias + np.random.rand() * ampl_amp) * elem
                         vec[i] = np.random.rand() * std_amp + std_bias
@@ -237,7 +239,8 @@ class MakeDataset:
                     for m in range(j + 1, self.num_of_all_g):
                         k = 0
                         while k < num_of_samples:
-                            vec = np.zeros(self.num_of_all_g * 2)
+                            vec = np.zeros(self.num_of_all_g * 2 + 1)
+                            vec[-1] = elem
                             vec[:self.num_of_all_g] = 1
                             vec[self.num_of_all_g + i] = (ampl_bias + np.random.rand() * ampl_amp) * elem
                             vec[i] = np.random.rand() * std_amp + std_bias
@@ -278,7 +281,8 @@ class MakeDataset:
                         for l in range(m + 1, self.num_of_all_g):
                             k = 0
                             while k < num_of_samples:
-                                vec = np.zeros(self.num_of_all_g * 2)
+                                vec = np.zeros(self.num_of_all_g * 2 + 1)
+                                vec[-1] = elem
                                 vec[:self.num_of_all_g] = 1
                                 vec[self.num_of_all_g + i] = (ampl_bias + np.random.rand() * ampl_amp) * elem
                                 vec[i] = np.random.rand() * std_amp + std_bias
@@ -321,7 +325,8 @@ class MakeDataset:
                             for z in range(l + 1, self.num_of_all_g):
                                 k = 0
                                 while k < num_of_samples:
-                                    vec = np.zeros(self.num_of_all_g * 2)
+                                    vec = np.zeros(self.num_of_all_g * 2 + 1)
+                                    vec[-1] = elem
                                     vec[:self.num_of_all_g] = 1
                                     vec[self.num_of_all_g + i] = (ampl_bias + np.random.rand() * ampl_amp) * elem
                                     vec[i] = np.random.rand() * std_amp + std_bias

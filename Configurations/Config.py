@@ -1,10 +1,13 @@
 import GPy
+import numpy as np
 
 ALPHA = 0.2
 
 NUM_GAUSS = 2
 
-INPUT_DIM = 3
+CENTERS = np.linspace(10, 40, NUM_GAUSS)
+
+INPUT_DIM = 2
 
 KERNEL_RQ = GPy.kern.RatQuad(INPUT_DIM)
 KERNEL_M32 = GPy.kern.Matern32(INPUT_DIM)
@@ -18,16 +21,19 @@ KERNEL = KERNEL_RQ
 # EXP_PATH = 'dataset_3_gaussians_small_3/exp_gaussians_3_exp.npz'
 # SAVE_PATH = 'experiment_3_gaussians_small_3/'
 
-TRAIN_PATH = 'make_dataset/dataset_mass_0/train/sample_data/samples_info.npz'
-EXP_PATH = 'make_dataset/dataset_mass_0/exp/sample_data/samples_info.npz'
-SAVE_PATH = 'experiment_mass/'
-NUM_STEPS = 2
+TRAIN_PATH = 'make_dataset/dataset_mass_4_sampling/train/sample_data/samples_info.npz'
+EXP_PATH = 'make_dataset/dataset_mass_4_sampling/exp/sample_data/samples_info.npz'
+SAVE_PATH = 'experiment_mass_4_sampling/'
+
+#less data - 50 items
+#less_less_data - 20 items
+NUM_STEPS = 300
 
 EXPERIMENT_NAME = 'RatQuad/'
 
 MONOMERS = 51
 
-SPACE_5 = [             {'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)},
+SPACE_5 = [           {'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)},
                       {'name': 'var_2', 'type': 'continuous', 'domain': (0, 50)},  # 2
                       {'name': 'var_3', 'type': 'continuous', 'domain': (0, 50)},
                       {'name': 'var_4', 'type': 'continuous', 'domain': (0, 50)},
@@ -37,6 +43,7 @@ SPACE_5 = [             {'name': 'var_1', 'type': 'continuous', 'domain': (15, 3
                       {'name': 'var_8', 'type': 'continuous', 'domain': (-100, 100)},
                       {'name': 'var_9', 'type': 'continuous', 'domain': (-100, 100)},
                       {'name': 'var_10', 'type': 'continuous', 'domain': (-100, 100)},
+                      {'name': 'var_11', 'type': 'discrete', 'domain': (-1, 1)}
                       ]
 
 SPACE_4 = [             {'name': 'var_1', 'type': 'continuous', 'domain': (1, 50)},
@@ -47,7 +54,7 @@ SPACE_4 = [             {'name': 'var_1', 'type': 'continuous', 'domain': (1, 50
                       {'name': 'var_6', 'type': 'continuous', 'domain': (-100, 100)},  # 2
                       {'name': 'var_7', 'type': 'continuous', 'domain': (-100, 100)},
                       {'name': 'var_8', 'type': 'continuous', 'domain': (-100, 100)},
-
+                      {'name': 'var_9', 'type': 'discrete', 'domain': (-1, 1)}
                       ]
 
 
@@ -57,6 +64,19 @@ SPACE_3 = [{'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)},
          {'name': 'var_4', 'type': 'continuous', 'domain': (-10, 10)},
          {'name': 'var_5', 'type': 'continuous', 'domain': (-10, 10)},
          {'name': 'var_6', 'type': 'continuous', 'domain': (-10, 10)},  # 2
+         {'name': 'var_7', 'type': 'discrete', 'domain': (-1, 1)}
+         ]
+
+SPACE_2 = [{'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)},
+         {'name': 'var_2', 'type': 'continuous', 'domain': (15, 35)},  # 2
+         {'name': 'var_3', 'type': 'continuous', 'domain': (-10, 10)},
+         {'name': 'var_4', 'type': 'continuous', 'domain': (-10, 10)},  # 2
+         {'name': 'var_5', 'type': 'discrete', 'domain': (-1, 1)}
+         ]
+
+SPACE_1 = [{'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)},
+           {'name': 'var_2', 'type': 'continuous', 'domain': (-10, 10)},  # 2
+           {'name': 'var_3', 'type': 'discrete', 'domain': (-1, 1)}
          ]
 
 # #
@@ -159,7 +179,9 @@ SPACE_10 = [          {'name': 'var_1', 'type': 'continuous', 'domain': (20, 200
 
                       ]
 # ####################################
-SPACE = {3: SPACE_3,
+SPACE = {1: SPACE_1,
+         2: SPACE_2,
+         3: SPACE_3,
          4: SPACE_4,
          5: SPACE_5,
          10: SPACE_10,

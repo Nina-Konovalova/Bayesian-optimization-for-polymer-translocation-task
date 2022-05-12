@@ -8,18 +8,10 @@ import multiprocessing as mp
 def main():
     parser = argparse.ArgumentParser(description='End-to-end make dataset')
     parser.add_argument('--dir_name',
-                        default='../dataset_mass_0/',
+                        default='../dataset_mass_4_sampling_10_000_3_gamma/',
                         type=str,
                         metavar='PATH',
                         help='Path to dir for saving data')
-    parser.add_argument('--num_of_samples',
-                        default=100,
-                        type=int,
-                        help='Number of all sample')
-    parser.add_argument('--mode',
-                        default="train",
-                        type=str,
-                        help='train/test/exp')
     parser.add_argument('--processes',
                         default=4,
                         type=int,
@@ -28,6 +20,18 @@ def main():
                         default=False,
                         type=bool,
                         help='parallel work with samples')
+    parser.add_argument('--noise',
+                        default=False,
+                        type=bool,
+                        help='presence of noise in data')
+    parser.add_argument('--sampling',
+                        default=True,
+                        type=bool,
+                        help='whether to use sampling or true gamma')
+    parser.add_argument('--num_of_distr',
+                        default=3,
+                        type=int,
+                        help='number of gamma distributions')
 
     args = parser.parse_args()
     subprocess.call(["gfortran", "-o", "outputic", "../../F.f90"])
@@ -36,8 +40,15 @@ def main():
 
     assert mp.cpu_count() >= args.processes, f'there are only {mp.cpu_count()} processes and you try {args.processes}'
     print(args.parallel)
-    data_maker = MakeDatasetMass(args.mode, args.dir_name, args.num_of_samples, args.parallel, args.processes)
-    data_maker.make_dataset(cfg_mass.SPACE[0]['domain'], cfg_mass.SPACE[1]['domain'])
+    data_maker = MakeDatasetMass(args.dir_name, args.parallel, args.processes, args.sampling, args.noise)
+    if args.num_of_distr == 1:
+        data_maker.make_dataset(cfg_mass.SPACE[0]['domain'], cfg_mass.SPACE[1]['domain'])
+    elif args.num_of_distr == 2:
+        data_maker.make_dataset([cfg_mass.SPACE[0]['domain'], cfg_mass.SPACE[2]['domain']],
+                                [cfg_mass.SPACE[1]['domain'], cfg_mass.SPACE[3]['domain']])
+    elif args.num_of_distr == 3:
+        data_maker.make_dataset([cfg_mass.SPACE[0]['domain'], cfg_mass.SPACE[2]['domain'], cfg_mass.SPACE[4]['domain']],
+                                [cfg_mass.SPACE[1]['domain'], cfg_mass.SPACE[3]['domain'], cfg_mass.SPACE[5]['domain']])
 
     try:
         os.remove('new_input.txt')

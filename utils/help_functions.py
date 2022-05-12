@@ -40,6 +40,17 @@ def make_data(rate_real, angs_real, y_pos_real, y_neg_real, times_real, rate, an
                           rate[i], angs[i], y_pos[i], y_neg[i], times[i], task)[0])
     return np.array(f)
 
+def make_data_vector_output(rate_real, angs_real, y_pos_real, y_neg_real, times_real, rate, angs, y_pos, y_neg, times, task):
+    '''
+    see all input variables in description for function()
+    :return: array for loss function for each element of considered dataset
+    '''
+    f = []
+    for i in (range(len(rate))):
+        f.append(function(rate_real, angs_real, y_pos_real, y_neg_real, times_real,
+                          rate[i], angs[i], y_pos[i], y_neg[i], times[i], task)[0])
+    return np.array(f)
+
 
 def function(rate_real, angs_real, y_pos_real, y_neg_real, times_real,
              rate_new, angs_new,  y_pos_new, y_neg_new, times_new, task):
