@@ -10,7 +10,7 @@ def make_input_file(curv, N=51, t=1, num1=50000):
     :param num1:number of points for time distr
     :return:txt file - input file to fortran program
     '''
-    f = open('./new_input.txt', 'w')
+    f = open('./new_input_1.txt', 'w')
     f.write(
         str(N - 1) + '\t' + str(t) + '\n' + str(num1) + '\t' + str(t) + '\t' + str(10000) + '\t' + str(t) + '\n')
     for i in range(N):
@@ -18,7 +18,7 @@ def make_input_file(curv, N=51, t=1, num1=50000):
     f.close()
 
 
-def read_derives(path_to_file='./der_output.txt'):
+def read_derives(path_to_file='./der_output_1.txt'):
         '''
         :param path_to_file: file with derivatives for free energy landscape
         :return: array of derivatives
@@ -36,7 +36,7 @@ def read_derives(path_to_file='./der_output.txt'):
         return derives
 
 
-def read_data(path_to_file='./new_output.txt', N=50):
+def read_data(path_to_file='./new_output_1.txt', N=50):
     '''
     :param path_to_file: path to output from fortran program
     :return: rate, time, y_pos_new, y_neg_new, got from FP equation solution
@@ -44,7 +44,7 @@ def read_data(path_to_file='./new_output.txt', N=50):
     dat = pd.read_csv(path_to_file, sep=' ', skiprows=[0, 1, 2], header=None)
     dat.drop(dat.columns[0], axis=1, inplace=True)
     #dat.fillna(1e+20, inplace=True)
-    r = pd.read_csv('./new_output.txt', sep=' ', nrows=2, header=None)
+    r = pd.read_csv('./new_output_1.txt', sep=' ', nrows=2, header=None)
     #r.fillna(1e+20, inplace=True)
 
     if N < 11:

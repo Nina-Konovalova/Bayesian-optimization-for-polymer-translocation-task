@@ -93,8 +93,8 @@ def make_data_vector_output(all_samples_distributions_sum_real, all_samples_dist
     f = []
 
     for i in (range(len(all_samples_distributions_sum_train))):
-        f1 = mse(np.log(all_samples_distributions_sum_real)[100:], np.log(all_samples_distributions_sum_train[i])[100:])
-        f2 = mse(np.log(all_samples_distributions_sum_real[:100]), np.log(all_samples_distributions_sum_train[i][:100])) * mult
+        f1 = mse(np.log(all_samples_distributions_sum_real)[100:], np.log(all_samples_distributions_sum_train[i])[100:]) * mult
+        f2 = mse((all_samples_distributions_sum_real[:100]), (all_samples_distributions_sum_train[i][:100]))
         f.append(np.hstack((f1, f2)))
         if make_plots:
             try:
@@ -122,7 +122,7 @@ def make_data_vector_output(all_samples_distributions_sum_real, all_samples_dist
             plt.savefig(cfg_gp_mass.PATH_TO_SAVE_PLOTS + str(e) + '/' + str(i) + 'jpg')
 
             plt.close()
-
+    print(f)
     return np.array(f)
 
 def fpca(data):

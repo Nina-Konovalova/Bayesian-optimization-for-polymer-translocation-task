@@ -6,11 +6,12 @@ from utils.landscape_to_distr import *
 from utils.help_functions import *
 import subprocess
 import matplotlib.pyplot as plt
+from GPyOpt.core.task.space import Design_space
 import Configurations.Config as CFG
 import os
 import json
 
-subprocess.call(["gfortran", "-o", "outputic", "F.f90"])
+subprocess.call(["gfortran", "-o", "outputic_1", "F_1.f90"])
 seed(42)
 
 
@@ -68,13 +69,18 @@ class BayesianOptimization:
             self.model = GPyOpt.models.GPModel(CFG.KERNEL, optimize_restarts=1, exact_feval=True)
         elif self.model_type == 'GP_MCMC':
             self.model = GPyOpt.models.GPModel_MCMC(CFG.KERNEL, exact_feval=True)
+        elif self.model_type == 'InputWarpedGP':
+            self.model = GPyOpt.models.input_warped_gpmodel.InputWarpedGPModel(space=Design_space(self.space),
+                                                                               #warping_function=GPy.util.warping_functions.LogFunction(),
+                                                                               #warping_function=GPy.util.warping_functions.TanhFunction(),
+                                                                               kernel=CFG.KERNEL, exact_feval=True)
         else:
             raise ValueError('no such type of model implemented')
 
     def all_losses(self, best_vals):
         new_curv = gaussian(self.points_polymer, best_vals)
         make_input_file(new_curv)
-        subprocess.check_output(["./outputic"])
+        subprocess.check_output(["./outputic_1"])
         rate, times, y_pos_new, y_neg_new = read_data()
         angs = angle(y_pos_new, y_neg_new)
         return function(self.rate_real, self.angs_real, self.y_pos_real, self.y_neg_real, self.times_real,
@@ -85,7 +91,7 @@ class BayesianOptimization:
         best_vals = x_end[0]
         new_curv = gaussian(self.points_polymer, best_vals)
         make_input_file(new_curv)
-        subprocess.check_output(["./outputic"])
+        subprocess.check_output(["./outputic_1"])
         old_der = read_derives()
         if (abs(old_der) > 4.).sum() != 0:
             print('too big derives')

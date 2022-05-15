@@ -6,7 +6,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='End-to-end inference')
 
     # configuration and regime
-    parser.add_argument('-model', '--model_type', default='InputWarpedGP', type=str,
+    parser.add_argument('-model', '--model_type', default='GP', type=str,
                         metavar='NAME',
                         help='type of used model (GP, GP_MCMC, WarpedGP)')
     parser.add_argument('-a', '--acquisition_type', default='MPI', type=str,
@@ -23,7 +23,7 @@ def parse_args():
                         help='num of processes for parallel work')
     parser.add_argument('--output', default='scalar', type=str,
                         help='scalar/vector/functional')
-    parser.add_argument('--num_gamma', default=1, type=int,
+    parser.add_argument('--num_gamma', default=2, type=int,
                         help='number of gamma for approx (1/2)')
     parser.add_argument('-eval', '--evaluator_type', default='lbfgs', type=str,
                         help='type of acquisition function to use. - ‘lbfgs’: L-BFGS. - ‘DIRECT’: Dividing Rectangles. - ‘CMA’: covariance matrix adaptation')

@@ -12,7 +12,7 @@ def probabilities_from_init_distributions(x_end):
 
         y = gaussian(np.arange(51), best_vals)
         make_input_file(y)
-        subprocess.check_output(["./outputic"])
+        subprocess.check_output(["./outputic_1"])
         # saving new output data
         rate, time, y_pos_new, y_neg_new = read_data()
         return y_pos_new, y_neg_new, rate, time

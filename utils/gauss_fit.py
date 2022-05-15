@@ -20,7 +20,8 @@ def gaussian(x, params):
    # cen = np.linspace(11, 81, 15)
     #sprint(params)
     wid = params[:len(cen)]
-    amp = params[len(cen):-1] * params[-1] #last variable is +-1
+    amp = np.array(params[len(cen):-1]) * params[-1] #last variable is +-1
+    #print(np.array(params[len(cen):-1]), amp)
     gauss = 0
     # print('wid,=', (wid))
     # print('amp',(amp))

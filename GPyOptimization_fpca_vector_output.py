@@ -99,6 +99,79 @@ class BayesianOptimizationMassFunctionalOutput:
         return fpca_discretized
 
     def fokker_plank_eq(self, x_end):
+        problem = False
+        best_vals = x_end[0]
+        new_curv = gaussian(self.points_polymer, best_vals)
+        make_input_file(new_curv)
+        subprocess.check_output(["./outputic"])
+        old_der = read_derives()
+        if (abs(old_der) > 4.).sum() != 0:
+            print('too big derives')
+            problem = True
+
+        rate, times, y_pos_new, y_neg_new = read_data()
+
+        if rate == 1e20 or rate == 0:
+            print('Out of space')
+            problem = True
+
+        if rate > 1:
+            print('Rate bigger 1')
+            problem = True
+
+        angs = angle(y_pos_new, y_neg_new)
+        diff_new, loss_rate, loss_angs, loss_mse, loss_times = \
+            function(self.rate_real, self.angs_real, self.y_pos_real, self.y_neg_real, self.times_real,
+                     rate, angs, y_pos_new, y_neg_new, times, "optimization")
+
+        print('rate_new', rate, 'rate_real', self.rate_real, 'differ', diff_new, 'loss angs', loss_angs)
+
+        res = {'vecs': best_vals,
+               'func_val': diff_new,
+               'rate_real': self.rate_real,
+               'rate_opt': rate,
+               'loss_rate': loss_rate,
+               'mse_loss': loss_mse,
+               'loss_angs': loss_angs,
+               'angle_suc_real': self.ang_pos_real,
+               'angle_unsuc_real': self.ang_neg_real,
+               'angle_suc_opt': angs[0],
+               'angle_unsuc_opt': angs[1],
+               'angle_pos_diff': abs(angs[0] - self.ang_pos_real),
+               'angle_neg_diff': abs(angs[1] - self.ang_neg_real),
+               'loss_times': loss_times,
+               'time_suc_real': self.time_pos_real,
+               'time_unsuc_real': self.time_neg_real,
+               'time_suc_opt': times[0],
+               'time_unsuc_opt': times[1],
+               'time_pos_diff': abs(times[0] - self.time_pos_real),
+               'time_neg_diff': abs(times[1] - self.time_neg_real),
+               }
+
+        if not problem:
+            if self.opt:
+                self.good_steps_have_left += 1
+                self.opt_steps['vecs'].append(x_end.tolist())
+                self.opt_steps['loss'].append(diff_new)
+                if self.save_opt_plots:
+                    plt.figure(figsize=(16, 12))
+                    plt.plot(new_curv)
+                    try:
+                        print(f'make dir {self.path_for_save + "optimization_pics/"} to save opt plots')
+                        os.mkdir(self.path_for_save + 'optimization_pics/')
+                    except:
+                        pass
+                    plt.savefig(
+                        self.path_for_save + 'optimization_pics/' + 'pic' + str(self.good_steps_have_left) + '.jpg')
+
+                self.data_out = self.data_out.append(res, ignore_index=True)
+                self.data_out.to_csv(self.path_for_save + 'results_compare_' + str(self.rate_real) + '.csv',
+                                     index=False)
+
+        print('good steps have left', self.good_steps_have_left, 'from', CFG.NUM_STEPS)
+        return diff_new.reshape(1, 3)
+
+    def fokker_plank_eq(self, x_end):
         x_end = x_end[0]
         problem = False
         shape = x_end[0]
@@ -211,16 +284,5 @@ class BayesianOptimizationMassFunctionalOutput:
                        'real': self.x_real.tolist(), 'all_way': {'X': self.bayesopt_loop.loop_state.X.tolist(),
                                                                  'Y': self.bayesopt_loop.loop_state.Y.tolist()}}, f, indent=4)
 
-        # print(myBopt.model.model)
-        # plt.figure(figsize=(16, 12))
-        # plt.plot(cfg_mass.X, self.x_true, label='real X')
-        # plt.plot(cfg_mass.X, gamma.pdf(cfg_mass.X, best_vals[0], scale=best_vals[1]), 'go--', linewidth=4,
-        #          markersize=2,
-        #          color='red', label='predicted')
-        # plt.plot(cfg_mass.X, gamma.pdf(cfg_mass.X, best_vals_opt[0], scale=best_vals_opt[1]), 'go--', linewidth=4,
-        #          markersize=2,
-        #          color='green', label='predicted only from opt')
-        # plt.legend()
-        # path_for_save = self.path_for_save + 'experiment_' + str(self.exp_number)
-        # plt.savefig(path_for_save + '.png')
+
         return None

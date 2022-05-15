@@ -62,13 +62,14 @@ def optimization(args):
 
         prepare_path()
 
-        for i in range(len(x_e['vecs'])):
+        for i in range(80, len(x_e['vecs'])):
+
             try:
                 os.mkdir(CFG.SAVE_PATH + CFG.EXPERIMENT_NAME + str(i) + '/')
             except:
                 pass
             gp_model = BayesianOptimization(args.model_type, x_e, i, CFG.SAVE_PATH + CFG.EXPERIMENT_NAME + str(i) + '/',
-                                            True, args.num_gamma)
+                                            False)
             gp_model.optimization_step(CFG.TRAIN_PATH, CFG.NUM_STEPS, args.acquisition_type)
 
     elif args.task == 'mass_distribution':
@@ -100,7 +101,7 @@ def optimization(args):
         else:
 
             for i in range(len_exp):
-                if i >= 4:
+                if i >= 0:
                     try:
                         os.mkdir(CFG.SAVE_PATH + CFG.EXPERIMENT_NAME + str(i) + '/')
                     except:
@@ -119,6 +120,7 @@ def optimization(args):
                                                                             i) + '/',
                                                                         True)
                         gp_model.optimization_step(CFG.TRAIN_PATH, CFG.NUM_STEPS)
+                        break
                     elif args.output == 'functional':
                         print('==============FUNCTIONAL====================')
                         gp_model = BayesianOptimizationMassFunctionalOutput(x_e, i,

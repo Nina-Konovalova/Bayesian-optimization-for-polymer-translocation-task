@@ -14,8 +14,8 @@ DATA_SIZE = {
     'exp': 50
 }
 
-# SPACE = ParameterSpace([ContinuousParameter('x1', 2, 30),
-#                         ContinuousParameter('x2', 2, 30)])
+SPACE = ParameterSpace([ContinuousParameter('x1', 2, 25),
+                        ContinuousParameter('x2', 2, 25)])
 
 # SPACE = [{'name': 'var_1', 'type': 'continuous', 'domain': (0.01, 100)},  # shape space for gamma distribution
 #          {'name': 'var_2', 'type': 'continuous', 'domain': (0.1, 100)},  # scale space for gamma distribution
@@ -39,13 +39,13 @@ DATA_SIZE = {
 #          {'name': 'var_4', 'type': 'continuous', 'domain': (14, 18)},  # scale space for gamma distribution
 #          ]
 
-SPACE = [{'name': 'var_1', 'type': 'continuous', 'domain': (3, 7)},  # shape space for gamma distribution
-         {'name': 'var_2', 'type': 'continuous', 'domain': (3, 7)},  # scale space for gamma distribution
-         {'name': 'var_3', 'type': 'continuous', 'domain': (7, 12)},  # shape space for gamma distribution
-         {'name': 'var_4', 'type': 'continuous', 'domain': (7, 12)},  # scale space for gamma distribution
-         {'name': 'var_5', 'type': 'continuous', 'domain': (13, 18)},  # shape space for gamma distribution
-         {'name': 'var_6', 'type': 'continuous', 'domain': (13, 18)},  # scale space for gamma distribution
-         ]
+# SPACE = [{'name': 'var_1', 'type': 'continuous', 'domain': (3, 7)},  # shape space for gamma distribution
+#          {'name': 'var_2', 'type': 'continuous', 'domain': (3, 7)},  # scale space for gamma distribution
+#          {'name': 'var_3', 'type': 'continuous', 'domain': (7, 12)},  # shape space for gamma distribution
+#          {'name': 'var_4', 'type': 'continuous', 'domain': (7, 12)},  # scale space for gamma distribution
+#          {'name': 'var_5', 'type': 'continuous', 'domain': (13, 18)},  # shape space for gamma distribution
+#          {'name': 'var_6', 'type': 'continuous', 'domain': (13, 18)},  # scale space for gamma distribution
+#          ]
 
 INPUT_DIM = 2
 

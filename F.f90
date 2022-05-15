@@ -139,7 +139,7 @@ print *, mid
 do j =0, Nt
 
   pTimeN(j) = pTimeN(j)*1.0/mid
-  if ((pTimeN(j))<1E-44) pTimeN(j) = 0.0
+  if ((pTimeN(j))<1E-44) pTimeN(j) = 1E-40
 
 enddo
 
@@ -158,7 +158,7 @@ print *, mid
 do j =1, Nt
 
     pTime0(j) = pTime0(j)*1.0/mid
-    if ((pTime0(j)*1E38)<1E-44) pTime0(j) = 0.0
+    if ((pTime0(j)*1E38)<1E-44) pTime0(j) = 1E-40
 enddo
 
 timeback = 0

@@ -8,6 +8,7 @@ sys.path.append('../../')
 from utils.landscape_to_distr import probabilities_from_init_distributions
 from utils.data_frotran_utils import read_derives
 from utils.help_functions import *
+from Configurations import Config as cfg
 from numpy import exp
 import config_dataset
 
@@ -39,18 +40,25 @@ class MakeDataset:
 
         self.dir_name = dir_name
 
-
-    def gaussian(self, x, *params):
+    def gaussian(self, x, params):
         '''
         :param x: array from 0 to number of monomers
         :param params: vector of parameters for free energy landscape
         :return: array of gaussian function with params applied to x
         '''
+
         eps = 1e-18
-        cen = np.linspace(10, 50, self.num_of_all_g)
+        cen = cfg.CENTERS
+        # cen = np.linspace(10, 50, cfg.NUM_GAUSS)
+        # cen = np.linspace(11, 81, 20)
+        # cen = np.linspace(11, 81, 15)
+        # sprint(params)
         wid = params[:len(cen)]
-        amp = params[len(cen):]
+        amp = params[len(cen):-1] * params[-1]  # last variable is +-1
         gauss = 0
+        # print('wid,=', (wid))
+        # print('amp',(amp))
+        # print((cen))
         for i in range(len(cen)):
             gauss += amp[i] * 1 / (np.sqrt((wid[i] + eps) * 2 * np.pi)) * exp(-(x - cen[i]) ** 2 / (2 * (wid[i] + eps)))
         return gauss
@@ -144,7 +152,7 @@ class MakeDataset:
             d = data[n]
             for i in tqdm(range(len(d['vecs']))):
                 fig, axs = plt.subplots(1, 3)
-                axs[0].plot(self.gaussian(x, *d['vecs'][i]))
+                axs[0].plot(self.gaussian(x, d['vecs'][i]))
                 axs[0].set_title('init landscape')
                 axs[1].plot(np.log(d['y_pos'][i]), 'tab:red')
                 axs[1].set_title('y_pose_log')
@@ -170,7 +178,7 @@ class MakeDataset:
                     vec = np.zeros(self.num_of_all_g * 2 + 1)
                     vec[-1] = elem
                     vec[:self.num_of_all_g] = 1
-                    vec[self.num_of_all_g + position] = (ampl_bias + np.random.rand() * ampl_amp) * elem
+                    vec[self.num_of_all_g + position] = (ampl_bias + np.random.rand() * ampl_amp) # * elem
                     vec[position] = std_bias + np.random.rand() * std_amp
                     rate, a, y_pos_new, y_neg_new, time, problem = self.check_data(vec)
                     if not problem:
@@ -205,9 +213,9 @@ class MakeDataset:
                         vec = np.zeros(self.num_of_all_g * 2 + 1)
                         vec[-1] = elem
                         vec[:self.num_of_all_g] = 1
-                        vec[self.num_of_all_g + i] = (ampl_bias + np.random.rand() * ampl_amp) * elem
+                        vec[self.num_of_all_g + i] = (ampl_bias + np.random.rand() * ampl_amp) #* elem
                         vec[i] = np.random.rand() * std_amp + std_bias
-                        vec[self.num_of_all_g + j] = (ampl_bias + np.random.rand() * ampl_amp) * elem
+                        vec[self.num_of_all_g + j] = (ampl_bias + np.random.rand() * ampl_amp) #* elem
                         vec[j] = np.random.rand() * std_amp + std_bias
                         rate, a, y_pos_new, y_neg_new, time, problem = self.check_data(vec)
                         if not problem:
@@ -242,11 +250,11 @@ class MakeDataset:
                             vec = np.zeros(self.num_of_all_g * 2 + 1)
                             vec[-1] = elem
                             vec[:self.num_of_all_g] = 1
-                            vec[self.num_of_all_g + i] = (ampl_bias + np.random.rand() * ampl_amp) * elem
+                            vec[self.num_of_all_g + i] = (ampl_bias + np.random.rand() * ampl_amp) #* elem
                             vec[i] = np.random.rand() * std_amp + std_bias
-                            vec[self.num_of_all_g + j] = (ampl_bias + np.random.rand() * ampl_amp) * elem
+                            vec[self.num_of_all_g + j] = (ampl_bias + np.random.rand() * ampl_amp) #* elem
                             vec[j] = np.random.rand() * std_amp + std_bias
-                            vec[self.num_of_all_g + m] = (ampl_bias + np.random.rand() * ampl_amp) * elem
+                            vec[self.num_of_all_g + m] = (ampl_bias + np.random.rand() * ampl_amp) #* elem
                             vec[m] = np.random.rand() * std_amp + ampl_amp
                             rate, a, y_pos_new, y_neg_new, time, problem = self.check_data(vec)
                             if not problem:
@@ -284,13 +292,13 @@ class MakeDataset:
                                 vec = np.zeros(self.num_of_all_g * 2 + 1)
                                 vec[-1] = elem
                                 vec[:self.num_of_all_g] = 1
-                                vec[self.num_of_all_g + i] = (ampl_bias + np.random.rand() * ampl_amp) * elem
+                                vec[self.num_of_all_g + i] = (ampl_bias + np.random.rand() * ampl_amp) #* elem
                                 vec[i] = np.random.rand() * std_amp + std_bias
-                                vec[self.num_of_all_g + j] = (ampl_bias + np.random.rand() * ampl_amp) * elem
+                                vec[self.num_of_all_g + j] = (ampl_bias + np.random.rand() * ampl_amp) #* elem
                                 vec[j] = np.random.rand() * std_amp + std_bias
-                                vec[self.num_of_all_g + m] = (ampl_bias + np.random.rand() * ampl_amp) * elem
+                                vec[self.num_of_all_g + m] = (ampl_bias + np.random.rand() * ampl_amp) #* elem
                                 vec[m] = np.random.rand() * std_amp + std_bias
-                                vec[self.num_of_all_g + l] = (ampl_bias + np.random.rand() * ampl_amp) * elem
+                                vec[self.num_of_all_g + l] = (ampl_bias + np.random.rand() * ampl_amp) #* elem
                                 vec[l] = np.random.rand() * std_amp + std_bias
                                 rate, a, y_pos_new, y_neg_new, time, problem = self.check_data(vec)
                                 if not problem:

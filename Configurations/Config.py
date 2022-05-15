@@ -3,11 +3,13 @@ import numpy as np
 
 ALPHA = 0.2
 
-NUM_GAUSS = 2
+NUM_GAUSS = 4
 
 CENTERS = np.linspace(10, 40, NUM_GAUSS)
+#CENTERS = np.linspace(20, 35, NUM_GAUSS)
+#CENTERS = np.linspace(30, 35, NUM_GAUSS)
 
-INPUT_DIM = 2
+INPUT_DIM = 9
 
 KERNEL_RQ = GPy.kern.RatQuad(INPUT_DIM)
 KERNEL_M32 = GPy.kern.Matern32(INPUT_DIM)
@@ -17,17 +19,21 @@ KERNEL_EQ = GPy.kern.ExpQuad(INPUT_DIM)
 
 KERNEL = KERNEL_RQ
 
-# TRAIN_PATH = 'dataset_3_gaussians_small_3/exp_gaussians_3_train.npz'
-# EXP_PATH = 'dataset_3_gaussians_small_3/exp_gaussians_3_exp.npz'
-# SAVE_PATH = 'experiment_3_gaussians_small_3/'
+TRAIN_PATH = 'make_dataset/dataset_4_gaussians_new_var/exp_gaussians_4_train.npz'
+EXP_PATH = 'make_dataset/dataset_4_gaussians_new_var/exp_gaussians_4_exp.npz'
+SAVE_PATH = 'experiment_4_gaussians_new_var/'
 
-TRAIN_PATH = 'make_dataset/dataset_mass_4_sampling/train/sample_data/samples_info.npz'
-EXP_PATH = 'make_dataset/dataset_mass_4_sampling/exp/sample_data/samples_info.npz'
-SAVE_PATH = 'experiment_mass_4_sampling/'
+# TRAIN_PATH = 'make_dataset/dataset_mass_4_sampling_10_000_2_gamma/train/sample_data/samples_info.npz'
+# EXP_PATH = 'make_dataset/dataset_mass_4_sampling_10_000_2_gamma/exp/sample_data/samples_info.npz'
+# SAVE_PATH = 'experiment_mass_4_sampling_10_000_2_gamma/'
+
+# TRAIN_PATH = 'make_dataset/mass_datasets/dataset_mass_1/train/sample_data/samples_info.npz'
+# EXP_PATH = 'make_dataset/mass_datasets/dataset_mass_1/exp/sample_data/samples_info.npz'
+# SAVE_PATH = 'experiment_mass_functional_output/'
 
 #less data - 50 items
 #less_less_data - 20 items
-NUM_STEPS = 300
+NUM_STEPS = 450
 
 EXPERIMENT_NAME = 'RatQuad/'
 
@@ -46,14 +52,14 @@ SPACE_5 = [           {'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)
                       {'name': 'var_11', 'type': 'discrete', 'domain': (-1, 1)}
                       ]
 
-SPACE_4 = [             {'name': 'var_1', 'type': 'continuous', 'domain': (1, 50)},
-                      {'name': 'var_2', 'type': 'continuous', 'domain': (0, 50)},  # 2
-                      {'name': 'var_3', 'type': 'continuous', 'domain': (0, 50)},
-                      {'name': 'var_4', 'type': 'continuous', 'domain': (0, 50)},
-                      {'name': 'var_5', 'type': 'continuous', 'domain': (-100, 100)},
-                      {'name': 'var_6', 'type': 'continuous', 'domain': (-100, 100)},  # 2
-                      {'name': 'var_7', 'type': 'continuous', 'domain': (-100, 100)},
-                      {'name': 'var_8', 'type': 'continuous', 'domain': (-100, 100)},
+SPACE_4 = [             {'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)},
+                      {'name': 'var_2', 'type': 'continuous', 'domain': (15, 35)},  # 2
+                      {'name': 'var_3', 'type': 'continuous', 'domain': (15, 35)},
+                      {'name': 'var_4', 'type': 'continuous', 'domain': (15, 35)},
+                      {'name': 'var_5', 'type': 'continuous', 'domain': (0, 40)},
+                      {'name': 'var_6', 'type': 'continuous', 'domain': (0, 40)},  # 2
+                      {'name': 'var_7', 'type': 'continuous', 'domain': (0, 40)},
+                      {'name': 'var_8', 'type': 'continuous', 'domain': (0, 40)},
                       {'name': 'var_9', 'type': 'discrete', 'domain': (-1, 1)}
                       ]
 
@@ -61,21 +67,21 @@ SPACE_4 = [             {'name': 'var_1', 'type': 'continuous', 'domain': (1, 50
 SPACE_3 = [{'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)},
          {'name': 'var_2', 'type': 'continuous', 'domain': (15, 35)},  # 2
          {'name': 'var_3', 'type': 'continuous', 'domain': (15, 35)},
-         {'name': 'var_4', 'type': 'continuous', 'domain': (-10, 10)},
-         {'name': 'var_5', 'type': 'continuous', 'domain': (-10, 10)},
-         {'name': 'var_6', 'type': 'continuous', 'domain': (-10, 10)},  # 2
+         {'name': 'var_4', 'type': 'continuous', 'domain': (0, 40)},
+         {'name': 'var_5', 'type': 'continuous', 'domain': (0, 40)},
+         {'name': 'var_6', 'type': 'continuous', 'domain': (0, 40)},  # 2
          {'name': 'var_7', 'type': 'discrete', 'domain': (-1, 1)}
          ]
 
 SPACE_2 = [{'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)},
          {'name': 'var_2', 'type': 'continuous', 'domain': (15, 35)},  # 2
-         {'name': 'var_3', 'type': 'continuous', 'domain': (-10, 10)},
-         {'name': 'var_4', 'type': 'continuous', 'domain': (-10, 10)},  # 2
+         {'name': 'var_3', 'type': 'continuous', 'domain': (0, 40)},
+         {'name': 'var_4', 'type': 'continuous', 'domain': (0, 40)},  # 2
          {'name': 'var_5', 'type': 'discrete', 'domain': (-1, 1)}
          ]
 
 SPACE_1 = [{'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)},
-           {'name': 'var_2', 'type': 'continuous', 'domain': (-10, 10)},  # 2
+           {'name': 'var_2', 'type': 'continuous', 'domain': (60, 110)},  # 2
            {'name': 'var_3', 'type': 'discrete', 'domain': (-1, 1)}
          ]
 
@@ -206,6 +212,13 @@ CONSTRAINTS_3 = [             {'name': 'constr_1', 'constraint': 'abs(x[:,3])-4*
                             {'name': 'constr_3', 'constraint': 'abs(x[:,5])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,2]'},
                             ]
 
+CONSTRAINTS_2 = [             {'name': 'constr_1', 'constraint': 'abs(x[:,2])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,0]'},
+                            {'name': 'constr_2', 'constraint': 'abs(x[:,3])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,1]'},
+                            ]
+
+CONSTRAINTS_1 = [             {'name': 'constr_1', 'constraint': 'abs(x[:,1])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,0]'},
+                            ]
+
 
 CONSTRAINTS_20 = [{'name': 'constr_1', 'constraint': 'abs(x[:,20])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,0]'},
                             {'name': 'constr_2', 'constraint': 'abs(x[:,21])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,1]'},
@@ -260,7 +273,10 @@ CONSTRAINTS_10 = [             {'name': 'constr_1', 'constraint': 'abs(x[:,10])-
 
                             ]
 
-CONSTRAINTS = {3: CONSTRAINTS_3,
+CONSTRAINTS = {
+         1: CONSTRAINTS_1,
+         2: CONSTRAINTS_2,
+         3: CONSTRAINTS_3,
          4: CONSTRAINTS_4,
          5: CONSTRAINTS_5,
          10: CONSTRAINTS_10,

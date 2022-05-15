@@ -5,7 +5,7 @@ sns.set_theme()
 from make_dataset import MakeDataset
 import config_dataset as cfg_dataset
 import subprocess
-subprocess.call(["gfortran", "-o", "outputic", "../../F.f90"])
+subprocess.call(["gfortran", "-o", "outputic_1", "../../F_1.f90"])
 import unittest
 import sys
 sys.path.append('../../')
