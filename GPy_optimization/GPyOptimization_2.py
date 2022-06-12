@@ -73,7 +73,7 @@ class BayesianOptimization:
             self.model = GPyOpt.models.input_warped_gpmodel.InputWarpedGPModel(space=Design_space(self.space),
                                                                                #warping_function=GPy.util.warping_functions.LogFunction(),
                                                                                #warping_function=GPy.util.warping_functions.TanhFunction(),
-                                                                               kernel=CFG.KERNEL, exact_feval=True)
+                                                                     kernel=CFG.KERNEL, exact_feval=True)
         else:
             raise ValueError('no such type of model implemented')
 
@@ -157,7 +157,7 @@ class BayesianOptimization:
                                      index=False)
 
         print('good steps have left', self.good_steps_have_left, 'from', CFG.NUM_STEPS)
-        return diff_new, x_end, problem
+        return (diff_new), x_end, problem
 
     def optimization_step(self, x_data_path, num_steps, acquisition_type='EI',
                           normalize=False, num_cores=-1, evaluator_type='lbfgs'):

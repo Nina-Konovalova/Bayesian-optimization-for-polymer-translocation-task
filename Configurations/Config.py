@@ -1,15 +1,19 @@
 import GPy
 import numpy as np
+from emukit.core import ParameterSpace, ContinuousParameter, DiscreteParameter
+from emukit.core.constraints import NonlinearInequalityConstraint
 
 ALPHA = 0.2
 
-NUM_GAUSS = 4
+OBJECTIVE_TYPE = 'usual' # also possible "log"
 
-CENTERS = np.linspace(10, 40, NUM_GAUSS)
-#CENTERS = np.linspace(20, 35, NUM_GAUSS)
+NUM_GAUSS = 3
+CENTERS = np.linspace(8, 44, NUM_GAUSS) # for 3 gaussians
+#CENTERS = np.linspace(10, 40, NUM_GAUSS)\
+#CENTERS = np.linspace(20, 35, NUM_GAUSS) #for 2 gaussians
 #CENTERS = np.linspace(30, 35, NUM_GAUSS)
 
-INPUT_DIM = 9
+INPUT_DIM = 7
 
 KERNEL_RQ = GPy.kern.RatQuad(INPUT_DIM)
 KERNEL_M32 = GPy.kern.Matern32(INPUT_DIM)
@@ -17,15 +21,20 @@ KERNEL_M52 = GPy.kern.Matern52(INPUT_DIM)
 KERNEL_RBF = GPy.kern.RBF(INPUT_DIM)
 KERNEL_EQ = GPy.kern.ExpQuad(INPUT_DIM)
 
-KERNEL = KERNEL_RQ
+KERNEL = KERNEL_M32
 
-TRAIN_PATH = 'make_dataset/dataset_4_gaussians_new_var/exp_gaussians_4_train.npz'
-EXP_PATH = 'make_dataset/dataset_4_gaussians_new_var/exp_gaussians_4_exp.npz'
-SAVE_PATH = 'experiment_4_gaussians_new_var/'
+# TRAIN_PATH = 'make_dataset/dataset_3_gaussians_new_var/exp_gaussians_3_train.npz'
+# EXP_PATH = 'make_dataset/dataset_3_gaussians_new_var/exp_gaussians_3_exp.npz'
+# SAVE_PATH = 'experiment_landscape/experiment_3_gaussians_new_var_kurm/'
 
-# TRAIN_PATH = 'make_dataset/dataset_mass_4_sampling_10_000_2_gamma/train/sample_data/samples_info.npz'
-# EXP_PATH = 'make_dataset/dataset_mass_4_sampling_10_000_2_gamma/exp/sample_data/samples_info.npz'
-# SAVE_PATH = 'experiment_mass_4_sampling_10_000_2_gamma/'
+TRAIN_PATH = 'make_dataset/mass_datasets/dataset_mass_4_sampling_5_000_1_gamma/train/sample_data/samples_info.npz'
+EXP_PATH = 'make_dataset/mass_datasets/dataset_mass_4_sampling_5_000_1_gamma/exp/sample_data/samples_info.npz'
+SAVE_PATH = 'experiment/experiment_mass_4_sampling_5_000_1_gamma_func_FURIE/'
+
+
+# TRAIN_PATH = 'make_dataset/mass_datasets/dataset_mass_4_sampling/train/sample_data/samples_info.npz'
+# EXP_PATH = 'make_dataset/mass_datasets/dataset_mass_4_sampling/exp/sample_data/samples_info.npz'
+# SAVE_PATH = 'experiment_mass_4_sampling_5000_log/'
 
 # TRAIN_PATH = 'make_dataset/mass_datasets/dataset_mass_1/train/sample_data/samples_info.npz'
 # EXP_PATH = 'make_dataset/mass_datasets/dataset_mass_1/exp/sample_data/samples_info.npz'
@@ -33,8 +42,9 @@ SAVE_PATH = 'experiment_4_gaussians_new_var/'
 
 #less data - 50 items
 #less_less_data - 20 items
-NUM_STEPS = 450
+NUM_STEPS = 150
 
+#EXPERIMENT_NAME = 'Matern/'
 EXPERIMENT_NAME = 'RatQuad/'
 
 MONOMERS = 51
@@ -51,6 +61,32 @@ SPACE_5 = [           {'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)
                       {'name': 'var_10', 'type': 'continuous', 'domain': (-100, 100)},
                       {'name': 'var_11', 'type': 'discrete', 'domain': (-1, 1)}
                       ]
+
+SPACE_4_v = ParameterSpace([ContinuousParameter('x1', 15, 35),
+                        ContinuousParameter('x2', 15, 35),
+                        ContinuousParameter('x3', 15, 35),
+                        ContinuousParameter('x4', 15, 35),
+                        ContinuousParameter('x5', 0, 40),
+                        ContinuousParameter('x6', 0, 40),
+                        ContinuousParameter('x7', 0, 40),
+                        ContinuousParameter('x8', 0, 40),
+                        DiscreteParameter('x9', [-1,1])])
+
+SPACE_3_v = ParameterSpace([ContinuousParameter('x1', 15, 35),
+                        ContinuousParameter('x2', 15, 35),
+                        ContinuousParameter('x3', 15, 35),
+
+                        ContinuousParameter('x4', 0, 40),
+                        ContinuousParameter('x5', 0, 40),
+                        ContinuousParameter('x6', 0, 40),
+                        DiscreteParameter('x9', [-1,1])])
+
+
+SPACE_2_v = ParameterSpace([ContinuousParameter('x1', 15, 35),
+                        ContinuousParameter('x2', 15, 35),
+                        ContinuousParameter('x3', 0, 40),
+                        ContinuousParameter('x4', 0, 40),
+                        DiscreteParameter('x5', [-1,1])])
 
 SPACE_4 = [             {'name': 'var_1', 'type': 'continuous', 'domain': (15, 35)},
                       {'name': 'var_2', 'type': 'continuous', 'domain': (15, 35)},  # 2
@@ -202,6 +238,7 @@ CONSTRAINTS_5 = [             {'name': 'constr_1', 'constraint': 'abs(x[:,5])-4*
                             {'name': 'constr_5', 'constraint': 'abs(x[:,9])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,4]'},
                             ]
 
+# CONSTRAINTS_4_vec = lambda x: 10 * (-(x[0] - 3)**2 - (x[1] - 7)**2 + constraint_radius ** 2)
 CONSTRAINTS_4 = [             {'name': 'constr_1', 'constraint': 'abs(x[:,4])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,0]'},
                             {'name': 'constr_2', 'constraint': 'abs(x[:,5])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,1]'},
                             {'name': 'constr_3', 'constraint': 'abs(x[:,6])-4*np.sqrt(2*np.pi*np.exp(1))*x[:,2]'},

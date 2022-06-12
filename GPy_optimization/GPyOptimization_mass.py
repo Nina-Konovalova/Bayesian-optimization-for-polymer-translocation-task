@@ -11,7 +11,7 @@ from scipy.stats import gamma
 sys.path.append('/')
 from utils.gauss_fit import *
 from utils.data_frotran_utils import *
-from utils.help_functions import *
+# from utils.help_functions import *
 import subprocess
 import matplotlib.pyplot as plt
 from utils.utils_mass import *
@@ -60,8 +60,8 @@ class BayesianOptimizationMass:
         self.y_real = x_e['all_samples_distributions_sum'][exp_number]
         self.num_gamma = num_gamma
 
-        if not os.path.exists('time_distributions/time_distributions.npz'):
-            prepare_distributions()
+        if not os.path.exists('../time_distributions/time_distributions_longer.npz'):
+            prepare_distributions('something')
 
         distributions = np.load('time_distributions/time_distributions_longer.npz')
         self.d = distributions['time_distributions']
@@ -86,7 +86,7 @@ class BayesianOptimizationMass:
             self.model = GPyOpt.models.GPModel_MCMC(cfg_mass.KERNEL, exact_feval=True)
         elif self.model_type == 'InputWarpedGP':
             self.model = GPyOpt.models.input_warped_gpmodel.InputWarpedGPModel(space=Design_space(self.space),
-                                                                               warping_function=GPy.util.warping_functions.LogFunction(),
+                                                                               #warping_function=GPy.util.warping_functions.LogFunction(),
                                                                                #warping_function=GPy.util.warping_functions.TanhFunction(),
                                                                                kernel=cfg_mass.KERNEL, exact_feval=True)
         else:
@@ -149,10 +149,8 @@ class BayesianOptimizationMass:
 
 
             self.data_out = self.data_out.append(res, ignore_index=True)
-            # self.data_out.to_csv(self.path_for_save + 'results_compare_' + str(round(shape, 2)) + '_' +
-            #                      str(round(scale, 2)) + '.csv',
-            #                      index=False)
-            print(f'step {self.good_steps_have_left}: scale - {scale}, shape - {shape}')
+
+            print(f'step {self.good_steps_have_left}: scale - {scale}, shape - {shape}, loss - {diff_new}')
         print('good steps have left', self.good_steps_have_left, 'from', CFG.NUM_STEPS)
         return (diff_new), x_end, problem
 
@@ -175,7 +173,6 @@ class BayesianOptimizationMass:
                                       shape_train[1, :].reshape(-1, 1), scale_train[1, :].reshape(-1, 1),
                                       shape_train[2, :].reshape(-1, 1), scale_train[2, :].reshape(-1, 1)), axis=1)
             y_train = make_data(self.y_real, all_samples_distributions_sum_train)
-
 
         self.opt = False
         myBopt = GPyOpt.methods.BayesianOptimization(f=self.fokker_plank_eq,  # function to optimize

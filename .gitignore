@@ -8,8 +8,12 @@
 *.csv
 *.pyc
 .idea/
+*.ipunb
+*.exe
+*.lnk
 __pycache__/
 venv/
 outputic.exe
 experiments/
 experients_1/
+bo_experiments/

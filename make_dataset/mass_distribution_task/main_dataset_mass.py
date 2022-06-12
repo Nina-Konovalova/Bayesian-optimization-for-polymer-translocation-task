@@ -8,7 +8,7 @@ import multiprocessing as mp
 def main():
     parser = argparse.ArgumentParser(description='End-to-end make dataset')
     parser.add_argument('--dir_name',
-                        default='../dataset_mass_4_sampling_10_000_3_gamma/',
+                        default='../dataset_mass_4_sampling_10_000_1_gamma_clew/',
                         type=str,
                         metavar='PATH',
                         help='Path to dir for saving data')
@@ -29,12 +29,12 @@ def main():
                         type=bool,
                         help='whether to use sampling or true gamma')
     parser.add_argument('--num_of_distr',
-                        default=3,
+                        default=1,
                         type=int,
                         help='number of gamma distributions')
 
     args = parser.parse_args()
-    subprocess.call(["gfortran", "-o", "outputic", "../../F.f90"])
+    subprocess.call(["gfortran", "-o", "outputic_1", "../../F_1.f90"])
     sys.path.append('../../')
     import Configurations.config_mass as cfg_mass
 

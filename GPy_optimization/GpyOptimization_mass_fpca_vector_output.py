@@ -16,6 +16,7 @@ import json
 from target_vector_estimation.l2_bayes_opt.acquisitions import (
     L2NegativeLowerConfidenceBound as L2_LCB,
     L2ExpectedImprovement as L2_EI)
+from skfda.representation.basis import BSpline, Fourier, Monomial
 
 subprocess.call(["gfortran", "-o", "outputic", "F.f90"])
 seed(42)
@@ -50,7 +51,7 @@ class BayesianOptimizationMassFunctionalOutput:
 
         self.y_real = x_e['all_samples_distributions_sum'][exp_number]
 
-        if not os.path.exists('time_distributions/time_distributions.npz'):
+        if not os.path.exists('../time_distributions/time_distributions.npz'):
             prepare_distributions()
 
         distributions = np.load('time_distributions/time_distributions.npz')
@@ -93,8 +94,9 @@ class BayesianOptimizationMassFunctionalOutput:
                          dataset_name='time_distribution',
                          argument_names=['t'],
                          coordinate_names=['p(t)'])
-
-        fpca_discretized = FPCA(n_components=3, centering=True)
+        #basis_fd = fd.to_basis(BSpline(n_basis=7))
+        fpca_discretized = FPCA(n_components=2, components_basis=Fourier(n_basis=20),  centering=True)
+        #fpca_discretized = FPCA(n_components=3, centering=True)
         fpca_discretized.fit(data)
         return fpca_discretized
 
@@ -143,7 +145,7 @@ class BayesianOptimizationMassFunctionalOutput:
     def find_quad(Y):
         res = []
         for i in range(len(Y)):
-            res.append(Y[i][0]**2 + Y[i][1]**2)
+            res.append(Y[i][0]**2 + Y[i][1]**2 + Y[i][2]**2)
         return np.array(res)
 
     def optimization_step(self, x_data_path, num_steps, acquisition_type='EI',
@@ -161,7 +163,7 @@ class BayesianOptimizationMassFunctionalOutput:
         x_train = np.concatenate((shape_train.reshape(-1, 1), scale_train.reshape(-1, 1)), axis=1)
 
         self.opt = False
-        self.model = GPRegression(x_train, y_train)
+        self.model = GPRegression(x_train, y_train, kernel = cfg_mass.KERNEL)
         self.model_wrapped = GPyModelWrapper(self.model)
         #acq = L2_LCB(model=self.model_wrapped, target=self.target)
         acq = L2_EI(model=self.model_wrapped, target=self.target)

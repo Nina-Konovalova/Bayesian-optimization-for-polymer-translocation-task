@@ -1,7 +1,9 @@
-from GPyOptimization_2 import BayesianOptimization
-from GPyOptimization_mass import BayesianOptimizationMass
-from GpyOptimization_mass_vector_output import BayesianOptimizationMassVectorOutput
-from GpyOptimization_mass_fpca_vector_output import BayesianOptimizationMassFunctionalOutput
+from GPy_optimization.GPyOptimization_2 import BayesianOptimization
+from GPy_optimization.GPyOptimization_mass import BayesianOptimizationMass
+
+from GPy_optimization.GPyOptimization_vector_output import BayesianOptimizationVectorOutput
+from GPy_optimization.GpyOptimization_mass_vector_output import BayesianOptimizationMassVectorOutput
+from GPy_optimization.GpyOptimization_mass_fpca_vector_output import BayesianOptimizationMassFunctionalOutput
 import numpy as np
 import Configurations.Config as CFG
 from Configurations.arguments import parse_args
@@ -62,15 +64,24 @@ def optimization(args):
 
         prepare_path()
 
-        for i in range(80, len(x_e['vecs'])):
+        for i in range(36, len(x_e['vecs'])):
 
             try:
                 os.mkdir(CFG.SAVE_PATH + CFG.EXPERIMENT_NAME + str(i) + '/')
             except:
                 pass
-            gp_model = BayesianOptimization(args.model_type, x_e, i, CFG.SAVE_PATH + CFG.EXPERIMENT_NAME + str(i) + '/',
-                                            False)
-            gp_model.optimization_step(CFG.TRAIN_PATH, CFG.NUM_STEPS, args.acquisition_type)
+            if args.output == 'scalar':
+                print('==============SCALAR====================')
+                gp_model = BayesianOptimization(args.model_type, x_e, i, CFG.SAVE_PATH + CFG.EXPERIMENT_NAME + str(i) + '/',
+                                                False)
+                gp_model.optimization_step(CFG.TRAIN_PATH, CFG.NUM_STEPS, args.acquisition_type)
+            elif args.output == 'vector':
+                print('==============VECTOR====================')
+                gp_model = BayesianOptimizationVectorOutput(x_e, i,
+                                                            CFG.SAVE_PATH + CFG.EXPERIMENT_NAME + str(
+                                                                    i) + '/',
+                                                            True)
+                gp_model.optimization_step(CFG.TRAIN_PATH, CFG.NUM_STEPS)
 
     elif args.task == 'mass_distribution':
         '''
@@ -101,7 +112,7 @@ def optimization(args):
         else:
 
             for i in range(len_exp):
-                if i >= 0:
+                if i >= 36:
                     try:
                         os.mkdir(CFG.SAVE_PATH + CFG.EXPERIMENT_NAME + str(i) + '/')
                     except:

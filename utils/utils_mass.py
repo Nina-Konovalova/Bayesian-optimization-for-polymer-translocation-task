@@ -2,22 +2,19 @@ import subprocess
 import sys
 import numpy as np
 from sklearn.metrics import mean_squared_error as mse
-import matplotlib.pyplot as plt
+
 import os
 from tqdm import tqdm
 from skfda import FDataGrid
 import matplotlib.pyplot as plt
 
-import skfda
-from skfda.datasets import fetch_growth
-from skfda.exploratory.visualization import FPCAPlot
 from skfda.preprocessing.dim_reduction.feature_extraction._fpca import FPCA
-from skfda.representation.basis import BSpline, Fourier, Monomial
 
 sys.path.append('../')
 from utils.data_frotran_utils import *
 from numpy.random import seed
 import Configurations.config_mass as cfg_mass
+import Configurations.config as cfg
 import gp_regression_code.GP_mass_config as cfg_gp_mass
 import multiprocessing as mp
 from functools import partial
@@ -46,6 +43,20 @@ def from_mass_to_landscape(N, const):
     landscape = np.ones(N) * const
     return landscape
 
+def from_mass_to_landscape_clew(N):
+    '''
+    some magic
+    :param N: number of monomers
+
+    '''
+    a = []
+    E = 5e5
+    q = 5
+    b = 20e-8
+    for i in range(N):
+        a.append((-i ** (3 / 2) + (N - i) ** (3 / 2)) / N * E * q * b / 6)
+    landscape = np.array(a) - max(a)
+    return landscape
 
 def make_data(all_samples_distributions_sum_real, all_samples_distributions_sum_train, shape_exp=None, scale_exp=None, \
               shape_train=None, scale_train=None, e=0, make_plots=False):
@@ -79,7 +90,8 @@ def make_data(all_samples_distributions_sum_real, all_samples_distributions_sum_
             plt.savefig(cfg_gp_mass.PATH_TO_SAVE_PLOTS + str(e) + '/' + str(i) + 'jpg')
 
             plt.close()
-
+    if cfg.OBJECTIVE == 'log':
+        return np.log(np.array(f))
     return np.array(f)
 
 def make_data_vector_output(all_samples_distributions_sum_real, all_samples_distributions_sum_train, mult=1e-4, shape_exp=None, scale_exp=None, \
@@ -122,7 +134,6 @@ def make_data_vector_output(all_samples_distributions_sum_real, all_samples_dist
             plt.savefig(cfg_gp_mass.PATH_TO_SAVE_PLOTS + str(e) + '/' + str(i) + 'jpg')
 
             plt.close()
-    print(f)
     return np.array(f)
 
 def fpca(data):
@@ -247,14 +258,15 @@ def make_data_parallel(all_samples_distributions_sum_real, all_samples_distribut
     return f
 
 
-def prepare_distributions():
+def prepare_distributions(type):
+
     final_time_d_array = []
     y_pos = []
     y_neg = []
     rate = []
     times = []
     for i, sample in tqdm(enumerate(cfg_mass.X)):
-        d, y_pos_new, y_neg_new, rate_new, times_new = landscape_to_distribution_mass(sample, cfg_mass.ENERGY_CONST)
+        d, y_pos_new, y_neg_new, rate_new, times_new = landscape_to_distribution_mass(sample, cfg_mass.ENERGY_CONST, type)
         final_time_d_array.append(d)
         y_pos.append(y_pos_new)
         y_neg.append(y_neg_new)
@@ -265,13 +277,14 @@ def prepare_distributions():
         os.mkdir('../../time_distributions')
     except:
         pass
+    print('save', '../../time_distributions/' + 'time_distributions_longer.npz')
 
     np.savez_compressed('../../time_distributions/' + 'time_distributions_longer.npz',
                         time_distributions=np.array(final_time_d_array), rate=np.array(rate), times=np.array(times),
                         y_pos=np.array(y_pos), y_neg=np.array(y_neg))
 
 
-def landscape_to_distribution_mass(N, energy_const):
+def landscape_to_distribution_mass(N, energy_const, type):
     '''
     for different number of monomers and constant landscape this function solves fp equation get time distributions and rate ->
     summation p*time_success_translocation + (1-rate)*time_unsuccess_translocation
@@ -281,9 +294,12 @@ def landscape_to_distribution_mass(N, energy_const):
     :return: results of solving fp equation
     '''
     N = int(N)
-    landscape = from_mass_to_landscape(N, energy_const)
+    if type != 'clew':
+        landscape = from_mass_to_landscape(N, energy_const)
+    else:
+        landscape = from_mass_to_landscape_clew(N)
     make_input_file(landscape, N=N)
-    subprocess.check_output(["./outputic"])
+    subprocess.check_output(["./outputic_1"])
     rate, times, y_pos_new, y_neg_new = read_data(N=N)
     final_time_d = (rate * y_pos_new) + (1 - rate) * y_neg_new
 

@@ -50,7 +50,7 @@ class BayesianOptimizationMassFunctionalOutput:
 
         self.y_real = x_e['all_samples_distributions_sum'][exp_number]
 
-        if not os.path.exists('time_distributions/time_distributions.npz'):
+        if not os.path.exists('../time_distributions/time_distributions.npz'):
             prepare_distributions()
 
         distributions = np.load('time_distributions/time_distributions.npz')

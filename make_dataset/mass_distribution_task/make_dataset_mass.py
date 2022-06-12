@@ -238,10 +238,10 @@ class MakeDatasetMass:
                 all_samples_distributions = []
                 self.make_dirs()
 
-                if not os.path.exists('../../time_distributions/time_distributions_longer.npz'):
-                    prepare_distributions()
+                if not os.path.exists('../../time_distributions/time_distributions_clew.npz'):
+                    prepare_distributions('clew')
 
-                distributions = np.load('../../time_distributions/time_distributions_longer.npz')
+                distributions = np.load('../../time_distributions/time_distributions_clew.npz')
                 d = distributions['time_distributions']
                 #d = distributions['y_pos'] * distributions['rate'].reshape(-1,1)
                 if isinstance(self.shape[0], int) or isinstance(self.shape[0], float):
@@ -259,7 +259,7 @@ class MakeDatasetMass:
                     else:
                         if not flag:
                             # print(self.shape[i], self.scale[i])
-                            s1 = np.random.gamma(self.shape[i], self.scale[i],2_000)
+                            s1 = np.random.gamma(self.shape[i], self.scale[i], 10_000)
                             s = []
                             for ff in range(len(s1)):
                                 s.append(round(s1[ff]))
@@ -287,10 +287,10 @@ class MakeDatasetMass:
                             g1 = gamma.pdf(cfg_mass.X, self.shape[i], scale=self.scale[i])
                         else:
                             s = {}
-                            s[0] = np.random.gamma(self.shape[0][i], self.scale[0][i], 10000).astype(np.int64)
+                            s[0] = np.random.gamma(self.shape[0][i], self.scale[0][i], 10_000).astype(np.int64)
                             g1 = gamma.pdf(cfg_mass.X, self.shape[0][i], scale=self.scale[0][i])
                             for k in range(1, len(self.shape)):
-                                s[k] = np.random.gamma(self.shape[k][i], self.scale[k][i], 10000).astype(np.int64)
+                                s[k] = np.random.gamma(self.shape[k][i], self.scale[k][i], 10_000).astype(np.int64)
                                 g1 += gamma.pdf(cfg_mass.X, self.shape[k][i], scale=self.scale[k][i])
 
                             if len(s.keys()) == 2:

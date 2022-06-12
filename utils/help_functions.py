@@ -45,8 +45,8 @@ def make_data(rate_real, angs_real, y_pos_real, y_neg_real, times_real, rate, an
         for i in (range(len(rate))):
             f.append(function_vector(rate_real, angs_real, y_pos_real, y_neg_real, times_real,
                               rate[i], angs[i], y_pos[i], y_neg[i], times[i], task)[0])
-
-    return np.array(f)
+    print((np.array(f)))
+    return (np.array(f))
 
 
 def function(rate_real, angs_real, y_pos_real, y_neg_real, times_real,
@@ -67,7 +67,7 @@ def function(rate_real, angs_real, y_pos_real, y_neg_real, times_real,
         '''
     # print((y_pos_new))
     # print((y_pos_real))
-    loss_true = mse(np.log(y_pos_new), np.log(y_pos_real))
+    loss_true = mse(np.log(y_pos_new*rate_real), np.log(y_pos_real))
     loss_false = mse(np.log(y_neg_new), np.log(y_neg_real[:]))
     loss_mse = loss_true + loss_false
     loss_rate = abs(rate_new - rate_real)
@@ -77,9 +77,16 @@ def function(rate_real, angs_real, y_pos_real, y_neg_real, times_real,
     else:
         alpha = CFG_OPT.ALPHA
     diff_new = loss_true + loss_false #loss_angs + loss_rate * alpha
+    #new_distr = (y_pos_new * rate_new + (1-rate_new)*y_neg_new)
+    #old_distr = (y_pos_real * rate_real + (1-rate_real)*y_neg_real)
+    #diff_new = mse(np.log(new_distr), np.log(old_distr))
+    #print(old_distr.shape)
     loss_times = (abs(times_new - times_real)).sum()
-
+    #print(np.log(diff_new))
+    if CFG_OPT.OBJECTIVE == 'log':
+        diff_new = np.log(diff_new)
     return diff_new, loss_rate, loss_angs, loss_mse, loss_times
+
 
 def function_vector(rate_real, angs_real, y_pos_real, y_neg_real, times_real,
              rate_new, angs_new,  y_pos_new, y_neg_new, times_new, task):
@@ -103,12 +110,13 @@ def function_vector(rate_real, angs_real, y_pos_real, y_neg_real, times_real,
     loss_mse = loss_true + loss_false
     loss_rate = abs(rate_new - rate_real)
     loss_angs = (abs(angs_new - angs_real)).sum()
+    loss_times = (abs(times_new - times_real)).sum()
     if task == 'approximation':
         alpha = CFG_REG.ALPHA
     else:
         alpha = CFG_OPT.ALPHA
-    diff_new = np.hstack(loss_true + loss_false, loss_rate) #loss_angs + loss_rate * alpha
-    loss_times = (abs(times_new - times_real)).sum()
+    diff_new = np.hstack((loss_true, loss_false, loss_rate, loss_angs, loss_times)) #loss_angs + loss_rate * alpha
+
 
     return diff_new, loss_rate, loss_angs, loss_mse, loss_times
 
@@ -122,7 +130,7 @@ def fpca(data):
     fpca_discretized.fit(data)
     return fpca_discretized
 
-def make_data(data,
+def make_data_fpca(data,
               fpca_discretized):
     '''
     see all input variables in description for function()

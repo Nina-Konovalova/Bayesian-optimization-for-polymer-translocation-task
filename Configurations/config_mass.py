@@ -33,12 +33,20 @@ SPACE = ParameterSpace([ContinuousParameter('x1', 2, 25),
 #          {'name': 'var_2', 'type': 'continuous', 'domain': (5, 15)},  # scale space for gamma distribution
 #          ]
 
-# SPACE = [{'name': 'var_1', 'type': 'continuous', 'domain': (3, 13)},  # shape space for gamma distribution
-#          {'name': 'var_2', 'type': 'continuous', 'domain': (3, 13)},  # scale space for gamma distribution
-#          {'name': 'var_3', 'type': 'continuous', 'domain': (14, 18)},  # shape space for gamma distribution
-#          {'name': 'var_4', 'type': 'continuous', 'domain': (14, 18)},  # scale space for gamma distribution
+# SPACE = [{'name': 'var_1', 'type': 'continuous', 'domain': (3, 18)},  # shape space for gamma distribution
+#          {'name': 'var_2', 'type': 'continuous', 'domain': (3, 18)},  # scale space for gamma distribution
+#          {'name': 'var_3', 'type': 'continuous', 'domain': (3, 18)},  # shape space for gamma distribution
+#          {'name': 'var_4', 'type': 'continuous', 'domain': (3, 18)},  # scale space for gamma distribution
 #          ]
 
+# SPACE = [{'name': 'var_1', 'type': 'continuous', 'domain': (3, 18)},  # shape space for gamma distribution
+#          {'name': 'var_2', 'type': 'continuous', 'domain': (3, 18)},  # scale space for gamma distribution
+#          {'name': 'var_3', 'type': 'continuous', 'domain': (3, 18)},  # shape space for gamma distribution
+#          {'name': 'var_4', 'type': 'continuous', 'domain': (3, 18)},  # scale space for gamma distribution
+#          {'name': 'var_5', 'type': 'continuous', 'domain': (3, 18)},  # shape space for gamma distribution
+#          {'name': 'var_6', 'type': 'continuous', 'domain': (3, 18)},  # scale space for gamma distribution
+#          ]
+#
 # SPACE = [{'name': 'var_1', 'type': 'continuous', 'domain': (3, 7)},  # shape space for gamma distribution
 #          {'name': 'var_2', 'type': 'continuous', 'domain': (3, 7)},  # scale space for gamma distribution
 #          {'name': 'var_3', 'type': 'continuous', 'domain': (7, 12)},  # shape space for gamma distribution
