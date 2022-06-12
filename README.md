@@ -1,10 +1,42 @@
 # Bayesian optymization for polymer translocation problem
 -----------------------------------------------------------
-## Intro to a poblem
-In this problem we are trying to solve problem of reconstruction the free energy landscape for polymer translocation
-knowing information about time distribution for such translocation.
 
-For more information you may read [Proposal.pdf](https://github.com/Nina-Konovalova/bayes_experiment/blob/main/theory/Proposal.pdf)
+
+## Intro to a poblem
+This work applies Bayesian optimization to recover information on polymer chemistry from statistical data on polymer translocation through a narrow opening in a planar membrane. In particular, two problems are considered:
+- determining the polymer length distribution from distribution of translocation time (Fig. 1);
+- deciphering the translocation free energy profile and thus obtaining information on polymer chemistry (Fig. 2).
+
+To solve these problems, we assume that the dynamic of polymer translocation is described by the Fokker-Plank (FP) equation that models one-dimensional motion in a free energy landscape, with the translocation degree chosen as the order parameter. The FP equation solves the direct problem: obtaining the translocation time distribution and success rate for known polymer structure. The inverse problem of deciphering polymer properties is solved by an active learning scheme: the Bayesian optimization algorithm <<queries>> the system to produce the Fokker-Planck solution for a particular polymer. The result is added to the database of known solutions and the optimal structural characteristics that produce the best match to the experimental data are found. 
+
+The work focuses on the methodology of Bayesian optimization and explores how the target functions, vector output, algorithm details and the quality of the translocation time distributions affect the accuracy of the inverse problem solution. At the same time, we hope that the work also has a practical significance and nanopore sensing devices can be applied in analytical labs dealing with polymer production and quality control.
+   
+Besides classical algorithm of Bayesian optimization it is also possible to add several improvements:
+   - vector output processing
+   - functional output processing
+   - input model warping
+   - optimize the logarithm of objective function
+
+Example of decyphering polymers lenght distribution is presented below
+   
+<p align="center">
+  <img src="https://github.com/Nina-Konovalova/bayes_experiment/blob/main/images/16pdf.jpg" width="250"  alt="Free energy profile decyphering for one Gaussian" >
+  <img src="https://github.com/Nina-Konovalova/bayes_experiment/blob/main/images/6pdf.jpg" width="250"  alt="Free energy profile decyphering for two Gaussians" >
+  <img src="https://github.com/Nina-Konovalova/bayes_experiment/blob/main/images/5pdf.jpg" width="250"  alt="Free energy profile decyphering for three Gaussians" >
+</p>
+<p align="center">   
+   <em> Fig.1 Polymers length decyphering</em>
+</p> 
+
+<p align="center">
+  <img src="https://github.com/Nina-Konovalova/bayes_experiment/blob/main/images/one_gaussian.png" width="250"  alt="Free energy profile decyphering for one Gaussian" >
+  <img src="https://github.com/Nina-Konovalova/bayes_experiment/blob/main/images/two_gaussians.png" width="250"  alt="Free energy profile decyphering for two Gaussians" >
+  <img src="https://github.com/Nina-Konovalova/bayes_experiment/blob/main/images/three_gaussians.png" width="250"  alt="Free energy profile decyphering for three Gaussians" >
+</p>
+<p align="center">   
+   <em> Fig.2 Free energy landscape decyphering</em>
+</p>   
+   
 
 ---------------------------------------------------------
 
@@ -39,10 +71,8 @@ as you want. In **<directory_for_output>** will be made new one with **EXPERIMEN
 To run your test video just run:
 
 ```
-python main_2.py  -t translocation
+python main_2.py -t translocation
 ```
-
-For detailed information about arguments, that can be changed, you can read [Documentation.md](https://github.com/Nina-Konovalova/bayes_experiment/blob/main/DOCUMENTATION.MD).
 
 ### Mass distribution task
 
@@ -55,6 +85,8 @@ python main_2.py -t mass_distribution
 ```
 
 
+For detailed information about arguments, that can be changed, you can read [Documentation.md](https://github.com/Nina-Konovalova/bayes_experiment/blob/main/DOCUMENTATION.MD).
+  
 -------------------------------------------------------------
 
 ## Compare time distribution and rate for predicted and initial landscapes.
@@ -66,4 +98,6 @@ There is also possibilities to make files of comparison, that contains informati
 2) MSE for time distributions for true and predicted landscapes
 
 3) rates for true and predicted landscapes and their difference.
+  
+ 
 
