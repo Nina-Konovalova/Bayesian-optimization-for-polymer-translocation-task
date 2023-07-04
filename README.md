@@ -1,23 +1,23 @@
-# Bayesian optymization for polymer translocation problem
+# Bayesian optimization for polymer translocation problem
 -----------------------------------------------------------
+This is my Master's thesis written during my education at Skoltech University.
 
-
-## Intro to a poblem
+## Intro to a problem
 This work applies Bayesian optimization to recover information on polymer chemistry from statistical data on polymer translocation through a narrow opening in a planar membrane. In particular, two problems are considered:
-- determining the polymer length distribution from distribution of translocation time (Fig. 1);
-- deciphering the translocation free energy profile and thus obtaining information on polymer chemistry (Fig. 2).
+- determining the polymer length distribution from the distribution of translocation time (Fig. 1);
+- deciphering the translocation-free energy profile and thus obtaining information on polymer chemistry (Fig. 2).
 
 To solve these problems, we assume that the dynamic of polymer translocation is described by the Fokker-Plank (FP) equation that models one-dimensional motion in a free energy landscape, with the translocation degree chosen as the order parameter. The FP equation solves the direct problem: obtaining the translocation time distribution and success rate for known polymer structure. The inverse problem of deciphering polymer properties is solved by an active learning scheme: the Bayesian optimization algorithm <<queries>> the system to produce the Fokker-Planck solution for a particular polymer. The result is added to the database of known solutions and the optimal structural characteristics that produce the best match to the experimental data are found. 
 
 The work focuses on the methodology of Bayesian optimization and explores how the target functions, vector output, algorithm details and the quality of the translocation time distributions affect the accuracy of the inverse problem solution. At the same time, we hope that the work also has a practical significance and nanopore sensing devices can be applied in analytical labs dealing with polymer production and quality control.
    
-Besides classical algorithm of Bayesian optimization it is also possible to add several improvements:
+Besides the classical algorithm of Bayesian optimization it is also possible to add several improvements:
    - vector output processing
    - functional output processing
    - input model warping
-   - optimize the logarithm of objective function
+   - optimize the logarithm of the objective function
 
-Example of decyphering polymers lenght distribution is presented below
+An example of decyphering polymer length distribution is presented below
    
 <p align="center">
   <img src="https://github.com/Nina-Konovalova/bayes_experiment/blob/main/images/16pdf.jpg" width="250"  alt="Free energy profile decyphering for one Gaussian" >
@@ -44,7 +44,7 @@ Example of decyphering polymers lenght distribution is presented below
 
 Make sure you have all dependencies from `requirements.txt` installed before proceeding. 
 
-To install this dependencies run 
+To install this dependency run 
 
 ```
 pip install -r requirements.txt
@@ -76,7 +76,7 @@ python main_2.py -t translocation
 
 ### Mass distribution task
 
-The second option is to run recover for mass distribution task. All configs and arguments can be found
+The second option is to run recovery for the mass distribution task. All configs and arguments can be found
 
 To run your test video just run:
 
@@ -91,7 +91,7 @@ For detailed information about arguments, that can be changed, you can read [Doc
 
 ## Compare time distribution and rate for predicted and initial landscapes.
 
-There is also possibilities to make files of comparison, that contains information about:
+There is also possibility to make files of comparison, that contain information about:
 
 1) true and predicted parameters for landscapes;
  
